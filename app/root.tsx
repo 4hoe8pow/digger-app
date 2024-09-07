@@ -1,5 +1,5 @@
 import { ClerkApp } from '@clerk/remix'
-import { LinksFunction } from '@remix-run/node'
+import { LinksFunction } from '@remix-run/cloudflare'
 import {
 	Links,
 	Meta,
@@ -9,6 +9,7 @@ import {
 } from '@remix-run/react'
 
 import styles from './index.css?url'
+
 import '98.css'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }]

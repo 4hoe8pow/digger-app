@@ -1,5 +1,3 @@
-import { Entity } from '../types/Entity'
-
 export enum TicketStatus {
 	OPEN = 'open',
 	IN_PROGRESS = 'in_progress',
@@ -12,9 +10,12 @@ export enum TicketPriority {
 	HIGH = 'high',
 }
 
-export type Ticket = Entity & {
+export type Ticket = {
+	id: number
+	createdAt: Date
+	updatedAt: Date
 	title: string
-	description?: string
+	description: string | null
 	projectId: number
 	status: TicketStatus
 	priority: TicketPriority

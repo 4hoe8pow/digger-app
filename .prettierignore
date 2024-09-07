@@ -3,3 +3,7 @@ styled-system/*
 node_modules/*
 
 .husky
+
+pnpm-lock.yaml
+
+schema.ts
