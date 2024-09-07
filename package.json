@@ -1,0 +1,56 @@
+{
+	"name": "digger",
+	"private": true,
+	"sideEffects": false,
+	"type": "module",
+	"scripts": {
+		"prepare": "husky && panda codegen",
+		"build": "remix vite:build",
+		"dev": "remix vite:dev",
+		"fmt": "prettier --write .",
+		"lint": "eslint --fix .",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"98.css": "^0.1.20",
+		"@clerk/remix": "^4.2.22",
+		"@remix-run/node": "^2.11.2",
+		"@remix-run/react": "^2.11.2",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"rough-viz": "^2.0.5"
+	},
+	"devDependencies": {
+		"@pandacss/dev": "^0.45.2",
+		"@remix-run/dev": "^2.11.2",
+		"@types/react": "^18.3.5",
+		"@types/react-dom": "^18.3.0",
+		"@typescript-eslint/eslint-plugin": "^8.4.0",
+		"@typescript-eslint/parser": "^8.4.0",
+		"autoprefixer": "^10.4.20",
+		"eslint": "^9.9.1",
+		"eslint-import-resolver-typescript": "^3.6.3",
+		"eslint-plugin-import": "^2.30.0",
+		"eslint-plugin-jsx-a11y": "^6.10.0",
+		"eslint-plugin-react": "^7.35.2",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"globals": "^15.9.0",
+		"husky": "^9.1.5",
+		"lint-staged": "^15.2.10",
+		"postcss": "^8.4.45",
+		"prettier": "^3.3.3",
+		"typescript": "^5.5.4",
+		"typescript-eslint": "^8.4.0",
+		"vite": "^5.4.3",
+		"vite-tsconfig-paths": "^5.0.1"
+	},
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"lint-staged": {
+		"*.{ts,tsx}": [
+			"eslint --fix",
+			"prettier --write ./{app,components}/**/*.{ts,tsx}"
+		]
+	}
+}
