@@ -1,0 +1,6 @@
+[[d1_databases]]
+ binding = "DB"
+ database_name = "digger-db"
+ database_id = "0aad6353-586f-4425-8d84-c79ee52f18c9"
+ migrations_dir = "app/components/infrastructures/migrations"
+ preview_database_id = "DB"

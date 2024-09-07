@@ -1,0 +1,13 @@
+{
+	"version": "7",
+	"dialect": "sqlite",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "6",
+			"when": 1725685289825,
+			"tag": "0000_vengeful_secret_warriors",
+			"breakpoints": true
+		}
+	]
+}
