@@ -1,9 +1,9 @@
 import { ProjectDTO } from '~/components/applications/dto/projectDTO'
 import { IAssignmentQueryService } from '~/components/applications/input/AssignmentInputPort'
 import { db } from '~/components/infrastructures/db'
-
-export const AssignmentQueryService: IAssignmentQueryService = {
-	async getProjectsByUserId(userId: number): Promise<ProjectDTO[]> {
+//user_2lgbAVNOpwwqtfpUawnN4zEBZRu
+export const assignmentQueryService: IAssignmentQueryService = {
+	async getProjectsByUser(userId: string): Promise<ProjectDTO[]> {
 		return Promise.resolve(
 			db
 				.from('assignments')

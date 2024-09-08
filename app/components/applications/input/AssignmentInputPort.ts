@@ -5,9 +5,9 @@ export type AssignmentInputPort = {
 	assignUserToProject: (projectId: number, userId: number) => Promise<void>
 	//ユーザをプロジェクトから除外
 	removeUserFromProject: (projectId: number, userId: number) => Promise<void>
-	getProjectsByUserId: (userId: number) => Promise<void>
+	getProjectsByMe: () => Promise<ProjectDTO[]>
 }
 
 export type IAssignmentQueryService = {
-	getProjectsByUserId: (userId: number) => Promise<ProjectDTO[]>
+	getProjectsByUser: (userId: string) => Promise<ProjectDTO[]>
 }

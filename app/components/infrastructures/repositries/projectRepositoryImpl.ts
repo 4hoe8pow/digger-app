@@ -19,7 +19,7 @@ const createProjectEntity = (row: ProjectType): Project => ({
 	},
 })
 
-export const projectRepository: IProjectRepository = {
+export const projectRepositoryImpl: IProjectRepository = {
 	// プロジェクトIDで検索
 	findById: async (id: number): Promise<Project | null> => {
 		const { data, error } = await db

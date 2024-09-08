@@ -33,7 +33,7 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 	},
 })
 
-export const ticketRepository: ITicketRepository = {
+export const ticketRepositoryImpl: ITicketRepository = {
 	// チケットIDでチケットを検索
 	findById: async (id: number): Promise<Ticket | null> => {
 		const { data, error } = await db

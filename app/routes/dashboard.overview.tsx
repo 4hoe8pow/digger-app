@@ -1,6 +1,9 @@
+import { useLoaderData } from '@remix-run/react'
+
+import { createAssignmentController } from '~/components/presentations/controllers/assignmentController'
+
 import { css } from 'styled-system/css'
 import { grid, gridItem } from 'styled-system/patterns'
-import { defaultMemberData, defaultProjectData } from 'tests/sample'
 
 export type ProjectData = {
 	title: string
@@ -13,19 +16,29 @@ export type MemberData = {
 	joined: string
 }
 
-type IndexProps = {
-	projectData: ProjectData
-	memberData: MemberData[]
+export async function clientLoader() {
+	//コントローラ呼び出し
+	const controller = createAssignmentController()
+	//自分がjoinしているプロジェクトをすべて取得
+	const data = await controller.getProjectsByMe()
+	return data
 }
 
-export default function Index({
-	projectData = defaultProjectData,
-	memberData = defaultMemberData,
-}: IndexProps) {
+export default function Index() {
+	const data = useLoaderData<typeof clientLoader>()
 	return (
 		<div className={grid({ columns: 12, gap: '6' })}>
-			<div className={gridItem({ colSpan: 3 })}>Project Title</div>
-			<div className={gridItem({ colSpan: 9 })}>{projectData.title}</div>
+			<div className={gridItem({ colSpan: 3 })}>Project</div>
+			<div className={gridItem({ colSpan: 9 })}>
+				<select className={css({ w: '100%' })}>
+					{data.map((project) => (
+						<option key={project.id} value={project.id}>
+							{project.name}
+						</option>
+					))}
+				</select>
+			</div>
+			{/*
 			<div className={gridItem({ colSpan: 12 })}>
 				<table className={css({ w: '100%' })}>
 					<thead>
@@ -48,6 +61,7 @@ export default function Index({
 					</tbody>
 				</table>
 			</div>
+			*/}
 		</div>
 	)
 }

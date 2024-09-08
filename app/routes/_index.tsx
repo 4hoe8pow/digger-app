@@ -1,23 +1,27 @@
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/remix'
-import { Link, useLoaderData } from '@remix-run/react'
+import {
+	SignedIn,
+	SignedOut,
+	SignInButton,
+	SignUpButton,
+	useUser,
+} from '@clerk/remix'
+import { Link } from '@remix-run/react'
 
-import { ticketRepository } from '~/components/infrastructures/repositries/ticketRepository'
-
-export async function clientLoader() {
-	const data = await ticketRepository.findById(1)
-
-	return data
-}
+import { userRepositoryImpl } from '~/components/infrastructures/repositries/userRepositoryImpl'
+import { createUserController } from '~/components/presentations/controllers/userController'
 
 export default function Index() {
-	const data = useLoaderData<typeof clientLoader>()
+	const { isSignedIn, user } = useUser()
+	if (!isSignedIn) {
+		return null
+	}
+	const controller = createUserController(userRepositoryImpl)
+
+	controller.saveMe(user)
+	user.primaryEmailAddress?.toString()
 
 	return (
 		<div>
-			<div>
-				<h2>Ticket Data</h2>
-				<pre>{JSON.stringify(data, null, 2)}</pre>
-			</div>
 			<SignedIn>
 				<Link to={'/dashboard'}>Go to Dashboard</Link>
 			</SignedIn>

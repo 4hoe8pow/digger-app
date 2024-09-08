@@ -12,7 +12,7 @@ const createAssignmentEntity = (row: AssignmentType): Assignment => ({
 	userId: row.user_id,
 })
 
-export const assignmentRepository: IAssignmentRepository = {
+export const assignmentRepositoryImpl: IAssignmentRepository = {
 	// プロジェクトIDでアサインメントを検索
 	findByProjectId: async (projectId: number): Promise<Assignment[]> => {
 		const { data, error } = await db

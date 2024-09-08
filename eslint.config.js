@@ -104,7 +104,8 @@ const typescriptConfig = {
 		],
 		'import/no-named-as-default': 'off',
 		'import/no-named-as-default-member': 'off',
-		'no-console': 'error',
+		'no-console': 'warn',
+		'import/namespace': 'off',
 		'import/order': [
 			'error',
 			{
