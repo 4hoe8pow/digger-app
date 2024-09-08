@@ -13,9 +13,7 @@ import { Database } from '../schema'
 type TicketType = Database['public']['Tables']['tickets']['Row']
 
 // チケットエンティティを生成するヘルパー関数
-const createTicketEntity = (
-	row: TicketType
-): Ticket => ({
+const createTicketEntity = (row: TicketType): Ticket => ({
 	id: row.id,
 	createdAt: parse(row.created_at!),
 	updatedAt: parse(row.updated_at!),

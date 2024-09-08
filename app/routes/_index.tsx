@@ -12,13 +12,12 @@ export async function clientLoader() {
 export default function Index() {
 	const data = useLoaderData<typeof clientLoader>()
 
-
 	return (
 		<div>
 			<div>
-					<h2>Ticket Data</h2>
-					<pre>{JSON.stringify(data, null, 2)}</pre>
-				</div>
+				<h2>Ticket Data</h2>
+				<pre>{JSON.stringify(data, null, 2)}</pre>
+			</div>
 			<SignedIn>
 				<Link to={'/dashboard'}>Go to Dashboard</Link>
 			</SignedIn>

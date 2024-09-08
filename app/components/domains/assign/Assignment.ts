@@ -1,6 +1,4 @@
-import { Entity } from '../types/Entity'
-
-export type Assignment = Entity & {
+export type Assignment = {
 	projectId: number
 	userId: number
 }
