@@ -1,5 +1,5 @@
 import { IProjectRepository } from '~/components/domains/project/IProjectRepository'
-import { Project, ProjectStatus } from '~/components/domains/project/Project'
+import { Project } from '~/components/domains/project/Project'
 
 import { ProjectInputPort } from '../input/ProjectIuputPort'
 import { ProjectOutputPort } from '../output/ProjectOutputPort'
@@ -8,11 +8,11 @@ export const projectInteractor = (
 	projectRepository: IProjectRepository,
 	outputPort: ProjectOutputPort
 ): ProjectInputPort => ({
-	async createProject(name, description, status) {
+	async createProject(name, description, is_active) {
 		const project: Project = {
 			name,
 			description,
-			status,
+			is_active,
 			changeName: () => project,
 			changeStatus: () => project,
 		}
@@ -29,10 +29,10 @@ export const projectInteractor = (
 	},
 
 	async updateProject(
-		id: number,
+		id: string,
 		name?: string,
 		description?: string | null,
-		status?: ProjectStatus
+		is_active?: boolean
 	): Promise<void> {
 		projectRepository
 			.findById(id)
@@ -41,7 +41,7 @@ export const projectInteractor = (
 
 				if (name) project.changeName(name)
 				if (description !== undefined) project.description = description
-				if (status) project.changeStatus(status)
+				if (is_active) project.changeStatus(is_active)
 
 				return projectRepository.save(project)
 			})
@@ -55,7 +55,7 @@ export const projectInteractor = (
 			})
 	},
 
-	async deleteProject(id: number): Promise<void> {
+	async deleteProject(id: string): Promise<void> {
 		projectRepository
 			.deleteById(id)
 			.then(() => outputPort.presentProjectDeletionSuccess())
@@ -68,7 +68,7 @@ export const projectInteractor = (
 			})
 	},
 
-	async getProjectById(id: number): Promise<void> {
+	async getProjectById(id: string): Promise<void> {
 		projectRepository
 			.findById(id)
 			.then((project) => {

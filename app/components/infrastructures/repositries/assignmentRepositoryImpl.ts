@@ -14,7 +14,7 @@ const createAssignmentEntity = (row: AssignmentType): Assignment => ({
 
 export const assignmentRepositoryImpl: IAssignmentRepository = {
 	// プロジェクトIDでアサインメントを検索
-	findByProjectId: async (projectId: number): Promise<Assignment[]> => {
+	findByProjectId: async (projectId: string): Promise<Assignment[]> => {
 		const { data, error } = await db
 			.from('assignments')
 			.select('*')
@@ -28,7 +28,7 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 	},
 
 	// ユーザーIDでアサインメントを検索
-	findByUserId: async (userId: number): Promise<Assignment[]> => {
+	findByUserId: async (userId: string): Promise<Assignment[]> => {
 		const { data, error } = await db
 			.from('assignments')
 			.select('*')
@@ -54,8 +54,8 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 
 	// プロジェクトIDとユーザーIDでアサインメントを削除
 	deleteByProjectIdAndUserId: async (
-		projectId: number,
-		userId: number
+		projectId: string,
+		userId: string
 	): Promise<void> => {
 		await db
 			.from('assignments')

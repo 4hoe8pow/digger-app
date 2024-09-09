@@ -1,7 +1,7 @@
 import { ProjectDTO } from '~/components/applications/dto/projectDTO'
 import { IAssignmentQueryService } from '~/components/applications/input/AssignmentInputPort'
 import { db } from '~/components/infrastructures/db'
-//user_2lgbAVNOpwwqtfpUawnN4zEBZRu
+
 export const assignmentQueryService: IAssignmentQueryService = {
 	async getProjectsByUser(userId: string): Promise<ProjectDTO[]> {
 		return Promise.resolve(
@@ -9,47 +9,34 @@ export const assignmentQueryService: IAssignmentQueryService = {
 				.from('assignments')
 				.select(
 					`
-          projects (
-            id,
-            name,
-            description,
-            status
-          )
-        `
+					projects (
+						id,
+            			name,
+            			description,
+            			is_active
+          			)
+        		`
 				)
 				.eq('user_id', userId)
-		)
-			.then(({ data, error }) => {
-				if (error) {
-					throw new Error(
-						'Failed to fetch projects for user: ' + error.message
-					)
-				}
+		).then(({ data, error }) => {
+			if (error) {
+				throw new Error(error.message)
+			}
 
-				if (!data || data.length === 0) {
-					return []
-				}
+			if (!data || data.length === 0) {
+				return []
+			}
 
-				const projectDTOs: ProjectDTO[] = data.map(
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(assignment: any) => ({
-						id: assignment.projects.id,
-						name: assignment.projects.name,
-						description: assignment.projects.description,
-						status: assignment.projects.status,
-					})
-				)
-
-				return projectDTOs
-			})
-			.catch((error: unknown) => {
-				const typedError =
-					error instanceof Error
-						? error
-						: new Error(
-								'An unknown error occurred while fetching projects for user'
-							)
-				throw typedError
-			})
+			const projectDTOs: ProjectDTO[] = data.map(
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(assignment: any) => ({
+					id: assignment.projects.id,
+					name: assignment.projects.name,
+					description: assignment.projects.description,
+					is_active: assignment.projects.is_active,
+				})
+			)
+			return projectDTOs
+		})
 	},
 }

@@ -20,8 +20,11 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 	title: row.title,
 	description: row.description,
 	projectId: row.project_id,
+	userId: row.user_id,
+	effortEstimate: row.effort_estimate!,
 	status: row.status as TicketStatus,
 	priority: row.priority as TicketPriority,
+
 	changeTitle(newTitle: string): Ticket {
 		return { ...this, title: newTitle, updatedAt: new Date() }
 	},
@@ -31,11 +34,21 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 	changePriority(newPriority: TicketPriority): Ticket {
 		return { ...this, priority: newPriority, updatedAt: new Date() }
 	},
+	changeUserId(newUserId: string): Ticket {
+		return { ...this, userId: newUserId, updatedAt: new Date() }
+	},
+	changeEffortEstimate(newEffortEstimate: number): Ticket {
+		return {
+			...this,
+			effortEstimate: newEffortEstimate,
+			updatedAt: new Date(),
+		}
+	},
 })
 
 export const ticketRepositoryImpl: ITicketRepository = {
 	// チケットIDでチケットを検索
-	findById: async (id: number): Promise<Ticket | null> => {
+	findById: async (id: string): Promise<Ticket | null> => {
 		const { data, error } = await db
 			.from('tickets')
 			.select('*')
@@ -50,7 +63,7 @@ export const ticketRepositoryImpl: ITicketRepository = {
 	},
 
 	// プロジェクトIDでチケットを検索
-	findByProjectId: async (projectId: number): Promise<Ticket[]> => {
+	findByProjectId: async (projectId: string): Promise<Ticket[]> => {
 		const { data, error } = await db
 			.from('tickets')
 			.select('*')
@@ -74,6 +87,8 @@ export const ticketRepositoryImpl: ITicketRepository = {
 				title: ticket.title,
 				description: ticket.description,
 				project_id: ticket.projectId,
+				user_id: ticket.userId,
+				effort_estimate: ticket.effortEstimate,
 				status: ticket.status,
 				priority: ticket.priority,
 			})
@@ -81,7 +96,7 @@ export const ticketRepositoryImpl: ITicketRepository = {
 	},
 
 	// チケットをIDで削除
-	deleteById: async (id: number): Promise<void> => {
+	deleteById: async (id: string): Promise<void> => {
 		await db.from('tickets').delete().eq('id', id)
 	},
 }

@@ -1,13 +1,7 @@
-export enum ProjectStatus {
-	PLANNED = 'planned',
-	IN_PROGRESS = 'in_progress',
-	COMPLETED = 'completed',
-}
-
 export type Project = {
 	name: string
 	description: string | null
-	status: ProjectStatus
+	is_active: boolean
 	changeName: (newName: string) => Project
-	changeStatus: (newStatus: ProjectStatus) => Project
+	changeStatus: (newStatus: boolean) => Project
 }

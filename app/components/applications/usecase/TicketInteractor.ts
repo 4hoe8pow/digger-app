@@ -13,19 +13,23 @@ export const ticketInteractor = (
 	outputPort: TicketOutputPort
 ): TicketInputPort => ({
 	async createTicket(
-		projectId: number,
+		projectId: string,
 		title: string,
 		description: string | null,
 		status: TicketStatus,
-		priority: TicketPriority
+		priority: TicketPriority,
+		userId: string,
+		effortEstimate: number
 	) {
 		const ticket: Ticket = {
-			id: 0, // This will be assigned by the database
+			id: '',
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			title,
 			description,
 			projectId,
+			userId,
+			effortEstimate,
 			status,
 			priority,
 			changeTitle: (newTitle: string) => ({
@@ -43,6 +47,16 @@ export const ticketInteractor = (
 				priority: newPriority,
 				updatedAt: new Date(),
 			}),
+			changeUserId: (newUserId: string) => ({
+				...ticket,
+				userId: newUserId,
+				updatedAt: new Date(),
+			}),
+			changeEffortEstimate: (newEffortEstimate: number) => ({
+				...ticket,
+				effortEstimate: newEffortEstimate,
+				updatedAt: new Date(),
+			}),
 		}
 		ticketRepository
 			.save(ticket)
@@ -57,21 +71,27 @@ export const ticketInteractor = (
 	},
 
 	async updateTicket(
-		id: number,
+		id: string,
+		projectId?: string,
 		title?: string,
 		description?: string | null,
 		status?: TicketStatus,
-		priority?: TicketPriority
+		priority?: TicketPriority,
+		userId?: string,
+		effortEstimate?: number
 	) {
 		ticketRepository
 			.findById(id)
 			.then((ticket) => {
 				if (!ticket) throw new Error('Ticket not found')
 
-				if (title) ticket.changeTitle(title)
+				if (title) ticket = ticket.changeTitle(title)
 				if (description !== undefined) ticket.description = description
-				if (status) ticket.changeStatus(status)
-				if (priority) ticket.changePriority(priority)
+				if (status) ticket = ticket.changeStatus(status)
+				if (priority) ticket = ticket.changePriority(priority)
+				if (userId) ticket = ticket.changeUserId(userId) // Use changeUserId method
+				if (effortEstimate !== undefined)
+					ticket = ticket.changeEffortEstimate(effortEstimate) // Use changeEffortEstimate method
 
 				return ticketRepository.save(ticket)
 			})
@@ -85,7 +105,7 @@ export const ticketInteractor = (
 			})
 	},
 
-	async deleteTicket(id: number) {
+	async deleteTicket(id: string) {
 		ticketRepository
 			.deleteById(id)
 			.then(() => outputPort.presentTicketDeletionSuccess())
@@ -98,7 +118,7 @@ export const ticketInteractor = (
 			})
 	},
 
-	async getTicketById(id: number) {
+	async getTicketById(id: string) {
 		ticketRepository
 			.findById(id)
 			.then((ticket) => {
@@ -114,7 +134,7 @@ export const ticketInteractor = (
 			})
 	},
 
-	async getTicketsByProjectId(projectId: number) {
+	async getTicketsByProjectId(projectId: string) {
 		ticketRepository
 			.findByProjectId(projectId)
 			.then((tickets) => outputPort.presentTickets(tickets))

@@ -5,20 +5,25 @@ import {
 
 export type TicketInputPort = {
 	createTicket: (
-		projectId: number,
+		projectId: string,
 		title: string,
 		description: string | null,
 		status: TicketStatus,
-		priority: TicketPriority
+		priority: TicketPriority,
+		userId: string,
+		effortEstimate: number
 	) => Promise<void>
 	updateTicket: (
-		id: number,
+		id: string,
+		projectId?: string,
 		title?: string,
 		description?: string | null,
 		status?: TicketStatus,
-		priority?: TicketPriority
+		priority?: TicketPriority,
+		userId?: string,
+		effortEstimate?: number
 	) => Promise<void>
-	deleteTicket: (id: number) => Promise<void>
-	getTicketById: (id: number) => Promise<void>
-	getTicketsByProjectId: (projectId: number) => Promise<void>
+	deleteTicket: (id: string) => Promise<void>
+	getTicketById: (id: string) => Promise<void>
+	getTicketsByProjectId: (projectId: string) => Promise<void>
 }

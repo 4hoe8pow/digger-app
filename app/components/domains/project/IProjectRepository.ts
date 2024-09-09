@@ -1,7 +1,7 @@
 import { Project } from './Project'
 
 export type IProjectRepository = {
-	findById: (id: number) => Promise<Project | null>
+	findById: (id: string) => Promise<Project | null>
 	save: (project: Project) => Promise<void>
-	deleteById: (id: number) => Promise<void>
+	deleteById: (id: string) => Promise<void>
 }

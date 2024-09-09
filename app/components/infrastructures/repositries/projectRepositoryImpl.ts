@@ -1,5 +1,5 @@
 import { IProjectRepository } from '~/components/domains/project/IProjectRepository'
-import { Project, ProjectStatus } from '~/components/domains/project/Project'
+import { Project } from '~/components/domains/project/Project'
 
 import { db } from '../db'
 import { Database } from '../schema'
@@ -10,18 +10,18 @@ type ProjectType = Database['public']['Tables']['projects']['Row']
 const createProjectEntity = (row: ProjectType): Project => ({
 	name: row.name,
 	description: row.description,
-	status: row.status as ProjectStatus,
+	is_active: row.is_active!,
 	changeName(newName: string): Project {
 		return { ...this, name: newName }
 	},
-	changeStatus(newStatus: ProjectStatus): Project {
-		return { ...this, status: newStatus }
+	changeStatus(newStatus: boolean): Project {
+		return { ...this, is_active: newStatus }
 	},
 })
 
 export const projectRepositoryImpl: IProjectRepository = {
 	// プロジェクトIDで検索
-	findById: async (id: number): Promise<Project | null> => {
+	findById: async (id: string): Promise<Project | null> => {
 		const { data, error } = await db
 			.from('projects')
 			.select('*')
@@ -42,13 +42,13 @@ export const projectRepositoryImpl: IProjectRepository = {
 			.upsert({
 				name: project.name,
 				description: project.description,
-				status: project.status,
+				is_active: project.is_active,
 			})
 			.single()
 	},
 
 	// プロジェクトをIDで削除
-	deleteById: async (id: number): Promise<void> => {
+	deleteById: async (id: string): Promise<void> => {
 		await db.from('projects').delete().eq('id', id)
 	},
 }

@@ -15,7 +15,7 @@ export const assignmentInteractor = (
 	assignmentQueryService: IAssignmentQueryService,
 	outputPort: AssignmentOutputPort
 ): AssignmentInputPort => ({
-	async assignUserToProject(projectId: number, userId: number) {
+	async assignUserToProject(projectId: string, userId: string) {
 		const assignment: Assignment = {
 			projectId,
 			userId,
@@ -32,7 +32,7 @@ export const assignmentInteractor = (
 			})
 	},
 
-	async removeUserFromProject(projectId: number, userId: number) {
+	async removeUserFromProject(projectId: string, userId: string) {
 		assignmentRepository
 			.deleteByProjectIdAndUserId(projectId, userId)
 			.then(() => outputPort.presentAssignmentDeletionSuccess())

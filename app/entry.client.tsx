@@ -9,6 +9,10 @@ import { hydrateRoot } from 'react-dom/client'
 
 import { RemixBrowser } from '@remix-run/react'
 
+import { userRepositoryImpl } from './components/infrastructures/repositries/userRepositoryImpl'
+import { createAssignmentController } from './components/presentations/controllers/assignmentController'
+import { createUserController } from './components/presentations/controllers/userController'
+
 startTransition(() => {
 	hydrateRoot(
 		document,
@@ -17,3 +21,12 @@ startTransition(() => {
 		</StrictMode>
 	)
 })
+
+const userRepository = userRepositoryImpl
+export const userController = createUserController(userRepository)
+export const assignController = createAssignmentController(
+	undefined,
+	userRepository,
+	undefined,
+	undefined
+)

@@ -1,6 +1,6 @@
 import { useLoaderData } from '@remix-run/react'
 
-import { createAssignmentController } from '~/components/presentations/controllers/assignmentController'
+import { assignController } from '~/entry.client'
 
 import { css } from 'styled-system/css'
 import { grid, gridItem } from 'styled-system/patterns'
@@ -17,10 +17,8 @@ export type MemberData = {
 }
 
 export async function clientLoader() {
-	//コントローラ呼び出し
-	const controller = createAssignmentController()
 	//自分がjoinしているプロジェクトをすべて取得
-	const data = await controller.getProjectsByMe()
+	const data = await assignController.getProjectsByMe()
 	return data
 }
 

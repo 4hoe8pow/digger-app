@@ -7,18 +7,15 @@ import {
 } from '@clerk/remix'
 import { Link } from '@remix-run/react'
 
-import { userRepositoryImpl } from '~/components/infrastructures/repositries/userRepositoryImpl'
-import { createUserController } from '~/components/presentations/controllers/userController'
+import { userController } from '~/entry.client'
 
 export default function Index() {
 	const { isSignedIn, user } = useUser()
 	if (!isSignedIn) {
 		return null
 	}
-	const controller = createUserController(userRepositoryImpl)
 
-	controller.saveMe(user)
-	user.primaryEmailAddress?.toString()
+	userController.saveMe(user)
 
 	return (
 		<div>

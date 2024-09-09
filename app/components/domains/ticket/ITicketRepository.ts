@@ -1,8 +1,8 @@
 import { Ticket } from './Ticket'
 
 export type ITicketRepository = {
-	findById: (id: number) => Promise<Ticket | null>
-	findByProjectId: (projectId: number) => Promise<Ticket[]>
+	findById: (id: string) => Promise<Ticket | null>
+	findByProjectId: (projectId: string) => Promise<Ticket[]>
 	save: (ticket: Ticket) => Promise<void>
-	deleteById: (id: number) => Promise<void>
+	deleteById: (id: string) => Promise<void>
 }

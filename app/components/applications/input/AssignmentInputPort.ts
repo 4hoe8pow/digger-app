@@ -2,9 +2,9 @@ import { ProjectDTO } from '../dto/projectDTO'
 
 export type AssignmentInputPort = {
 	//ユーザをプロジェクトへアサイン
-	assignUserToProject: (projectId: number, userId: number) => Promise<void>
+	assignUserToProject: (projectId: string, userId: string) => Promise<void>
 	//ユーザをプロジェクトから除外
-	removeUserFromProject: (projectId: number, userId: number) => Promise<void>
+	removeUserFromProject: (projectId: string, userId: string) => Promise<void>
 	getProjectsByMe: () => Promise<ProjectDTO[]>
 }
 

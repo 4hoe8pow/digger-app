@@ -1,27 +1,38 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
 export type Database = {
   public: {
     Tables: {
       assignments: {
         Row: {
           created_at: string | null
-          id: number
-          project_id: number
+          id: string
+          project_id: string
+          role_id: string | null
           updated_at: string | null
-          user_id: number
+          user_id: string
         }
         Insert: {
           created_at?: string | null
-          id?: number
-          project_id: number
+          id?: string
+          project_id: string
+          role_id?: string | null
           updated_at?: string | null
-          user_id: number
+          user_id: string
         }
         Update: {
           created_at?: string | null
-          id?: number
-          project_id?: number
+          id?: string
+          project_id?: string
+          role_id?: string | null
           updated_at?: string | null
-          user_id?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -31,65 +42,99 @@ export type Database = {
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "assignments_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       projects: {
         Row: {
           created_at: string | null
           description: string | null
-          id: number
+          id: string
+          is_active: boolean | null
           name: string
-          status: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           description?: string | null
-          id?: number
+          id?: string
+          is_active?: boolean | null
           name: string
-          status?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           description?: string | null
-          id?: number
+          id?: string
+          is_active?: boolean | null
           name?: string
-          status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      roles: {
+        Row: {
+          id: string
+          title: string
+        }
+        Insert: {
+          id?: string
+          title: string
+        }
+        Update: {
+          id?: string
+          title?: string
         }
         Relationships: []
       }
       tickets: {
         Row: {
+          completed_at: string | null
           created_at: string | null
           description: string | null
-          id: number
-          priority: string | null
-          project_id: number
-          status: string | null
+          effort_estimate: number | null
+          id: string
+          priority: Database["public"]["Enums"]["ticket_priority"] | null
+          project_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["ticket_status"] | null
           title: string
           updated_at: string | null
+          user_id: string
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string | null
           description?: string | null
-          id?: number
-          priority?: string | null
-          project_id: number
-          status?: string | null
+          effort_estimate?: number | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"] | null
+          project_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"] | null
           title: string
           updated_at?: string | null
+          user_id: string
         }
         Update: {
+          completed_at?: string | null
           created_at?: string | null
           description?: string | null
-          id?: number
-          priority?: string | null
-          project_id?: number
-          status?: string | null
+          effort_estimate?: number | null
+          id?: string
+          priority?: Database["public"]["Enums"]["ticket_priority"] | null
+          project_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"] | null
           title?: string
           updated_at?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -109,7 +154,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ticket_priority: "low" | "medium" | "high"
+      ticket_status: "open" | "cancel" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never

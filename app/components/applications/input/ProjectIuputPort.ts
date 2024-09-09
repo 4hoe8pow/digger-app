@@ -1,17 +1,15 @@
-import { ProjectStatus } from '~/components/domains/project/Project'
-
 export type ProjectInputPort = {
 	createProject: (
 		name: string,
 		description: string | null,
-		status: ProjectStatus
+		is_active: boolean
 	) => Promise<void>
 	updateProject: (
-		id: number,
+		id: string,
 		name?: string,
 		description?: string | null,
-		status?: ProjectStatus
+		is_active?: boolean
 	) => Promise<void>
-	deleteProject: (id: number) => Promise<void>
-	getProjectById: (id: number) => Promise<void>
+	deleteProject: (id: string) => Promise<void>
+	getProjectById: (id: string) => Promise<void>
 }

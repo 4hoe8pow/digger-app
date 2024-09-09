@@ -1,11 +1,11 @@
 import { Assignment } from './Assignment'
 
 export type IAssignmentRepository = {
-	findByProjectId: (projectId: number) => Promise<Assignment[]>
-	findByUserId: (userId: number) => Promise<Assignment[]>
+	findByProjectId: (projectId: string) => Promise<Assignment[]>
+	findByUserId: (userId: string) => Promise<Assignment[]>
 	save: (assignment: Assignment) => Promise<void>
 	deleteByProjectIdAndUserId: (
-		projectId: number,
-		userId: number
+		projectId: string,
+		userId: string
 	) => Promise<void>
 }
