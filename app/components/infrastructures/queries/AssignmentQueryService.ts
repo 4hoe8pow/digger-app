@@ -3,7 +3,7 @@ import { IAssignmentQueryService } from '~/components/applications/input/Assignm
 import { db } from '~/components/infrastructures/db'
 
 export const assignmentQueryService: IAssignmentQueryService = {
-	async getProjectsByUser(userId: string): Promise<ProjectDTO[]> {
+	async getProjectsByUserId(userId: string): Promise<ProjectDTO[]> {
 		return Promise.resolve(
 			db
 				.from('assignments')

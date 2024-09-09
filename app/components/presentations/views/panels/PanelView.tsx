@@ -1,4 +1,3 @@
-// app/components/presentations/views/panels/PanelView.tsx
 import { useState } from 'react'
 
 import { Outlet, useNavigate } from '@remix-run/react'
@@ -22,7 +21,7 @@ export function PanelView({ tabs }: PanelViewProps) {
 	}
 
 	return (
-		<div className={css({ w: '500' })}>
+		<div className={css({ w: '100%' })}>
 			<div role="tablist">
 				{tabs.map((tab) => (
 					<button

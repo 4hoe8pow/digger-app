@@ -5,6 +5,7 @@ import {
 	SignedOut,
 	SignInButton,
 	SignUpButton,
+	useUser,
 } from '@clerk/remix'
 
 import { PanelView } from '~/components/presentations/views/panels/PanelView'
@@ -47,12 +48,16 @@ export const activities = [
 ]
 
 export default function Index() {
+	const { isSignedIn, user } = useUser()
+	if (!isSignedIn) {
+		return null
+	}
 	const tabs = [
-		{ title: 'Overview', path: 'overview' },
-		{ title: 'Roadmap', path: 'roadmap' },
-		{ title: 'Burndown', path: 'burndown' },
-		{ title: 'Log', path: 'log' },
-		{ title: 'Project Settings', path: 'project-settings' },
+		{ title: 'Overview', path: user.id + '/overview' },
+		{ title: 'Roadmap', path: user.id + '/roadmap' },
+		{ title: 'Burndown', path: user.id + '/burndown' },
+		{ title: 'Log', path: user.id + '/log' },
+		{ title: 'Project Settings', path: user.id + '/project-settings' },
 	]
 
 	return (
@@ -67,13 +72,26 @@ export default function Index() {
 				<div
 					className={css({
 						display: 'flex',
-						flexDir: 'row',
+						flexDirection: { base: 'column', sm: 'row' },
 						justifyContent: 'center',
 						gap: '8',
+						p: '4',
 					})}
 				>
-					<PanelView tabs={tabs} />
-					<TimelineView activities={activities} />
+					<div
+						className={css({
+							width: { base: '100%', sm: '62%' },
+						})}
+					>
+						<PanelView tabs={tabs} />
+					</div>
+					<div
+						className={css({
+							width: { base: '100%', sm: '38%' },
+						})}
+					>
+						<TimelineView activities={activities} />
+					</div>
 				</div>
 			</SignedIn>
 			<SignedOut>

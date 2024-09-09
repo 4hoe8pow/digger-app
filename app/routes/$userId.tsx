@@ -8,7 +8,7 @@ export default function Index() {
 	const data = useLoaderData<typeof clientLoader>()
 	return (
 		<>
-			<h1>{data.userId}ww</h1>
+			<h1>{data.userId}</h1>
 		</>
 	)
 }

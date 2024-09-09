@@ -6,10 +6,8 @@ import {
 import { AssignmentOutputPort } from '~/components/applications/output/AssignmentOutputPort'
 import { assignmentInteractor } from '~/components/applications/usecase/AssignmentInteractor'
 import { IAssignmentRepository } from '~/components/domains/assign/IAssignmentRepository'
-import { IUserRepository } from '~/components/domains/user/IUserRepository'
 import { assignmentQueryService } from '~/components/infrastructures/queries/AssignmentQueryService'
 import { assignmentRepositoryImpl } from '~/components/infrastructures/repositries/assignmentRepositoryImpl'
-import { userRepositoryImpl } from '~/components/infrastructures/repositries/userRepositoryImpl'
 
 import { assignmentPresenter } from '../presenters/assignmentPresenter'
 
@@ -28,18 +26,17 @@ export const AssignmentController = ({
 		assignmentInputPort.removeUserFromProject(projectId, userId)
 	},
 
-	getProjectsByMe: (): Promise<ProjectDTO[]> => {
-		return assignmentInputPort.getProjectsByMe()
+	getProjectsByUserId: (userId: string): Promise<ProjectDTO[]> => {
+		return assignmentInputPort.getProjectsByUserId(userId)
 	},
 })
 
 export const createAssignmentController = (
 	ar: IAssignmentRepository = assignmentRepositoryImpl,
-	ur: IUserRepository = userRepositoryImpl,
 	q: IAssignmentQueryService = assignmentQueryService,
 	o: AssignmentOutputPort = assignmentPresenter
 ) => {
-	const assignmentInputPort = assignmentInteractor(ur, ar, q, o)
+	const assignmentInputPort = assignmentInteractor(ar, q, o)
 
 	return AssignmentController({ assignmentInputPort })
 }

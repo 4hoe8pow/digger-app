@@ -1,6 +1,5 @@
 import { Assignment } from '~/components/domains/assign/Assignment'
 import { IAssignmentRepository } from '~/components/domains/assign/IAssignmentRepository'
-import { IUserRepository } from '~/components/domains/user/IUserRepository'
 
 import { ProjectDTO } from '../dto/projectDTO'
 import {
@@ -10,7 +9,6 @@ import {
 import { AssignmentOutputPort } from '../output/AssignmentOutputPort'
 
 export const assignmentInteractor = (
-	userRepository: IUserRepository,
 	assignmentRepository: IAssignmentRepository,
 	assignmentQueryService: IAssignmentQueryService,
 	outputPort: AssignmentOutputPort
@@ -45,16 +43,9 @@ export const assignmentInteractor = (
 			})
 	},
 
-	async getProjectsByMe(): Promise<ProjectDTO[]> {
-		const user = userRepository._currentUser
-		if (!user) {
-			const error = new Error('User is not authenticated')
-			outputPort.presentError(error)
-			return Promise.reject(error)
-		}
-
+	async getProjectsByUserId(userId: string): Promise<ProjectDTO[]> {
 		return assignmentQueryService
-			.getProjectsByUser(user.id)
+			.getProjectsByUserId(userId)
 			.then((projects) => {
 				outputPort.presentProjects(projects)
 				return projects

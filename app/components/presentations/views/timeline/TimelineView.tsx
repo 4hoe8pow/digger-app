@@ -8,7 +8,7 @@ type TimelineViewProps = {
 
 export default function TimelineView({ activities }: TimelineViewProps) {
 	return (
-		<div className={stack({ gap: '6' })}>
+		<div className={stack({ gap: '6', w: '100%' })}>
 			{activities.map((activity, index) => (
 				<Activity
 					key={index}
