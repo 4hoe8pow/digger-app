@@ -3,7 +3,7 @@ import { IAssignmentQueryService } from '~/components/applications/input/Assignm
 import { db } from '~/components/infrastructures/db'
 
 export const assignmentQueryService: IAssignmentQueryService = {
-	async getProjectsByUserId(userId: string): Promise<ProjectDTO[]> {
+	async getProjectsByUsername(username: string): Promise<ProjectDTO[]> {
 		return Promise.resolve(
 			db
 				.from('assignments')
@@ -17,7 +17,7 @@ export const assignmentQueryService: IAssignmentQueryService = {
           			)
         		`
 				)
-				.eq('user_id', userId)
+				.eq('username', username)
 		).then(({ data, error }) => {
 			if (error) {
 				throw new Error(error.message)

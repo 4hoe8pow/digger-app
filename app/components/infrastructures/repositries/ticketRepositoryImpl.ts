@@ -20,8 +20,10 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 	title: row.title,
 	description: row.description,
 	projectId: row.project_id,
-	userId: row.user_id,
+	username: row.username,
 	effortEstimate: row.effort_estimate!,
+	startedAt: parse(row.started_at!),
+	completedAt: parse(row.completed_at!),
 	status: row.status as TicketStatus,
 	priority: row.priority as TicketPriority,
 
@@ -35,7 +37,7 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 		return { ...this, priority: newPriority, updatedAt: new Date() }
 	},
 	changeUserId(newUserId: string): Ticket {
-		return { ...this, userId: newUserId, updatedAt: new Date() }
+		return { ...this, username: newUserId, updatedAt: new Date() }
 	},
 	changeEffortEstimate(newEffortEstimate: number): Ticket {
 		return {
@@ -61,21 +63,6 @@ export const ticketRepositoryImpl: ITicketRepository = {
 
 		return createTicketEntity(data)
 	},
-
-	// プロジェクトIDでチケットを検索
-	findByProjectId: async (projectId: string): Promise<Ticket[]> => {
-		const { data, error } = await db
-			.from('tickets')
-			.select('*')
-			.eq('project_id', projectId)
-
-		if (error) {
-			return []
-		}
-
-		return data.map(createTicketEntity)
-	},
-
 	// チケットを保存
 	save: async (ticket: Ticket): Promise<void> => {
 		await db
@@ -87,7 +74,7 @@ export const ticketRepositoryImpl: ITicketRepository = {
 				title: ticket.title,
 				description: ticket.description,
 				project_id: ticket.projectId,
-				user_id: ticket.userId,
+				username: ticket.username,
 				effort_estimate: ticket.effortEstimate,
 				status: ticket.status,
 				priority: ticket.priority,
@@ -98,5 +85,20 @@ export const ticketRepositoryImpl: ITicketRepository = {
 	// チケットをIDで削除
 	deleteById: async (id: string): Promise<void> => {
 		await db.from('tickets').delete().eq('id', id)
+	},
+
+	// プロジェクト内のアクティブチケット取得
+	findActiveTickets: async (projectId: string): Promise<Ticket[]> => {
+		const { data, error } = await db
+			.from('tickets')
+			.select('*')
+			.eq('project_id', projectId)
+			.eq('status', 'open')
+
+		if (error || !data) {
+			return []
+		}
+
+		return data.map(createTicketEntity)
 	},
 }

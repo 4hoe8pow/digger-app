@@ -2,12 +2,15 @@ import { ProjectDTO } from '../dto/projectDTO'
 
 export type AssignmentInputPort = {
 	//ユーザをプロジェクトへアサイン
-	assignUserToProject: (projectId: string, userId: string) => Promise<void>
+	assignUserToProject: (projectId: string, username: string) => Promise<void>
 	//ユーザをプロジェクトから除外
-	removeUserFromProject: (projectId: string, userId: string) => Promise<void>
-	getProjectsByUserId: (userId: string) => Promise<ProjectDTO[]>
+	removeUserFromProject: (
+		projectId: string,
+		username: string
+	) => Promise<void>
+	getProjectsByUsername: (username: string) => Promise<ProjectDTO[]>
 }
 
 export type IAssignmentQueryService = {
-	getProjectsByUserId: (userId: string) => Promise<ProjectDTO[]>
+	getProjectsByUsername: (username: string) => Promise<ProjectDTO[]>
 }

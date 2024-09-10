@@ -5,6 +5,7 @@ import {
 	TicketPriority,
 } from '~/components/domains/ticket/Ticket'
 
+import { fromTicketToDTO, TicketDTO } from '../dto/ticketDTO'
 import { TicketInputPort } from '../input/TicketInputPort'
 import { TicketOutputPort } from '../output/TicketOutputPort'
 
@@ -18,7 +19,7 @@ export const ticketInteractor = (
 		description: string | null,
 		status: TicketStatus,
 		priority: TicketPriority,
-		userId: string,
+		username: string,
 		effortEstimate: number
 	) {
 		const ticket: Ticket = {
@@ -28,7 +29,7 @@ export const ticketInteractor = (
 			title,
 			description,
 			projectId,
-			userId,
+			username,
 			effortEstimate,
 			status,
 			priority,
@@ -49,7 +50,7 @@ export const ticketInteractor = (
 			}),
 			changeUserId: (newUserId: string) => ({
 				...ticket,
-				userId: newUserId,
+				username: newUserId,
 				updatedAt: new Date(),
 			}),
 			changeEffortEstimate: (newEffortEstimate: number) => ({
@@ -77,7 +78,7 @@ export const ticketInteractor = (
 		description?: string | null,
 		status?: TicketStatus,
 		priority?: TicketPriority,
-		userId?: string,
+		username?: string,
 		effortEstimate?: number
 	) {
 		ticketRepository
@@ -89,7 +90,7 @@ export const ticketInteractor = (
 				if (description !== undefined) ticket.description = description
 				if (status) ticket = ticket.changeStatus(status)
 				if (priority) ticket = ticket.changePriority(priority)
-				if (userId) ticket = ticket.changeUserId(userId) // Use changeUserId method
+				if (username) ticket = ticket.changeUserId(username) // Use changeUserId method
 				if (effortEstimate !== undefined)
 					ticket = ticket.changeEffortEstimate(effortEstimate) // Use changeEffortEstimate method
 
@@ -123,7 +124,7 @@ export const ticketInteractor = (
 			.findById(id)
 			.then((ticket) => {
 				if (!ticket) throw new Error('Ticket not found')
-				outputPort.presentTicket(ticket)
+				outputPort.presentTicket(fromTicketToDTO(ticket))
 			})
 			.catch((error: unknown) => {
 				const typedError =
@@ -134,16 +135,21 @@ export const ticketInteractor = (
 			})
 	},
 
-	async getTicketsByProjectId(projectId: string) {
-		ticketRepository
-			.findByProjectId(projectId)
-			.then((tickets) => outputPort.presentTickets(tickets))
+	async findActiveTickets(projectId: string): Promise<TicketDTO[]> {
+		return ticketRepository
+			.findActiveTickets(projectId)
+			.then((tickets) => {
+				const ticketDTOs = tickets.map(fromTicketToDTO)
+				outputPort.presentTickets(ticketDTOs)
+				return ticketDTOs
+			})
 			.catch((error: unknown) => {
 				const typedError =
 					error instanceof Error
 						? error
 						: new Error('An unknown error occurred')
 				outputPort.presentError(typedError)
+				return []
 			})
 	},
 })

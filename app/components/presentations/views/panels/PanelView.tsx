@@ -9,15 +9,16 @@ type PanelViewProps = {
 		title: string
 		path: string // pathを追加
 	}[]
+	isProjectSelected: boolean
 }
 
-export function PanelView({ tabs }: PanelViewProps) {
+export function PanelView({ tabs, isProjectSelected }: PanelViewProps) {
 	const [selectedTab, setSelectedTab] = useState(tabs[0].path) // 初期選択は最初のタブのパス
 	const navigate = useNavigate()
 
 	const handleTabClick = (path: string) => {
 		setSelectedTab(path)
-		navigate(path) // タブクリック時にルーティングを行う
+		navigate(path)
 	}
 
 	return (
@@ -28,8 +29,9 @@ export function PanelView({ tabs }: PanelViewProps) {
 						key={tab.title}
 						role="tab"
 						aria-selected={selectedTab === tab.path}
-						onClick={() => handleTabClick(tab.path)} // クリックでルーティング
+						onClick={() => handleTabClick(tab.path)}
 						tabIndex={0}
+						disabled={!isProjectSelected}
 					>
 						{tab.title}
 					</button>

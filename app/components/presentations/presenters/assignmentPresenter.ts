@@ -11,8 +11,8 @@ export const assignmentPresenter: AssignmentOutputPort = {
 		console.log('Assignment deletion succeeded.')
 	},
 
-	presentProjects: (userId: ProjectDTO[]) => {
-		console.log('Projects:', userId)
+	presentProjects: (username: ProjectDTO[]) => {
+		console.log('Projects:', username)
 	},
 
 	presentError: (error: Error) => {

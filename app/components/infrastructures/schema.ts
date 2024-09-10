@@ -16,7 +16,7 @@ export type Database = {
           project_id: string
           role_id: string | null
           updated_at: string | null
-          user_id: string
+          username: string
         }
         Insert: {
           created_at?: string | null
@@ -24,7 +24,7 @@ export type Database = {
           project_id: string
           role_id?: string | null
           updated_at?: string | null
-          user_id: string
+          username: string
         }
         Update: {
           created_at?: string | null
@@ -32,7 +32,7 @@ export type Database = {
           project_id?: string
           role_id?: string | null
           updated_at?: string | null
-          user_id?: string
+          username?: string
         }
         Relationships: [
           {
@@ -106,7 +106,7 @@ export type Database = {
           status: Database["public"]["Enums"]["ticket_status"] | null
           title: string
           updated_at: string | null
-          user_id: string
+          username: string
         }
         Insert: {
           completed_at?: string | null
@@ -120,7 +120,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["ticket_status"] | null
           title: string
           updated_at?: string | null
-          user_id: string
+          username: string
         }
         Update: {
           completed_at?: string | null
@@ -134,7 +134,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["ticket_status"] | null
           title?: string
           updated_at?: string | null
-          user_id?: string
+          username?: string
         }
         Relationships: [
           {

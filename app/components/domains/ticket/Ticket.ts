@@ -17,10 +17,12 @@ export type Ticket = {
 	title: string
 	description: string | null
 	projectId: string
-	userId: string
+	username: string
 	status: TicketStatus
 	priority: TicketPriority
 	effortEstimate: number
+	startedAt: Date
+	completedAt: Date
 	changeTitle: (newTitle: string) => Ticket
 	changeStatus: (newStatus: TicketStatus) => Ticket
 	changePriority: (newPriority: TicketPriority) => Ticket

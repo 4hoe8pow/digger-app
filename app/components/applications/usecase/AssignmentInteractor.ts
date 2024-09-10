@@ -13,10 +13,10 @@ export const assignmentInteractor = (
 	assignmentQueryService: IAssignmentQueryService,
 	outputPort: AssignmentOutputPort
 ): AssignmentInputPort => ({
-	async assignUserToProject(projectId: string, userId: string) {
+	async assignUserToProject(projectId: string, username: string) {
 		const assignment: Assignment = {
 			projectId,
-			userId,
+			username,
 		}
 		assignmentRepository
 			.save(assignment)
@@ -30,9 +30,9 @@ export const assignmentInteractor = (
 			})
 	},
 
-	async removeUserFromProject(projectId: string, userId: string) {
+	async removeUserFromProject(projectId: string, username: string) {
 		assignmentRepository
-			.deleteByProjectIdAndUserId(projectId, userId)
+			.deleteByProjectIdAndUserId(projectId, username)
 			.then(() => outputPort.presentAssignmentDeletionSuccess())
 			.catch((error: unknown) => {
 				const typedError =
@@ -43,9 +43,9 @@ export const assignmentInteractor = (
 			})
 	},
 
-	async getProjectsByUserId(userId: string): Promise<ProjectDTO[]> {
+	async getProjectsByUsername(username: string): Promise<ProjectDTO[]> {
 		return assignmentQueryService
-			.getProjectsByUserId(userId)
+			.getProjectsByUsername(username)
 			.then((projects) => {
 				outputPort.presentProjects(projects)
 				return projects

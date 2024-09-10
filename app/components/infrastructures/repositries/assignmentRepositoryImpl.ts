@@ -9,7 +9,7 @@ type AssignmentType = Database['public']['Tables']['assignments']['Row']
 // アサインメントエンティティを生成するヘルパー関数
 const createAssignmentEntity = (row: AssignmentType): Assignment => ({
 	projectId: row.project_id,
-	userId: row.user_id,
+	username: row.user_id,
 })
 
 export const assignmentRepositoryImpl: IAssignmentRepository = {
@@ -28,11 +28,11 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 	},
 
 	// ユーザーIDでアサインメントを検索
-	findByUserId: async (userId: string): Promise<Assignment[]> => {
+	findByUserId: async (username: string): Promise<Assignment[]> => {
 		const { data, error } = await db
 			.from('assignments')
 			.select('*')
-			.eq('user_id', userId)
+			.eq('user_id', username)
 
 		if (error) {
 			return []
@@ -47,7 +47,7 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 			.from('assignments')
 			.upsert({
 				project_id: assignment.projectId,
-				user_id: assignment.userId,
+				user_id: assignment.username,
 			})
 			.single()
 	},
@@ -55,12 +55,12 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 	// プロジェクトIDとユーザーIDでアサインメントを削除
 	deleteByProjectIdAndUserId: async (
 		projectId: string,
-		userId: string
+		username: string
 	): Promise<void> => {
 		await db
 			.from('assignments')
 			.delete()
 			.eq('project_id', projectId)
-			.eq('user_id', userId)
+			.eq('user_id', username)
 	},
 }

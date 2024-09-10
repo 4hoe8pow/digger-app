@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import {
 	SignedIn,
 	UserButton,
@@ -8,6 +10,8 @@ import {
 	useUser,
 } from '@clerk/remix'
 
+import { ProjectDTO } from '~/components/applications/dto/projectDTO'
+import { createAssignmentController } from '~/components/presentations/controllers/assignmentController'
 import { PanelView } from '~/components/presentations/views/panels/PanelView'
 import TimelineView from '~/components/presentations/views/timeline/TimelineView'
 
@@ -49,16 +53,42 @@ export const activities = [
 
 export default function Index() {
 	const { isSignedIn, user } = useUser()
+	const [projects, setProjects] = useState<ProjectDTO[]>([])
+	const [selectedProjectId, setSelectedProjectId] = useState<string>('')
+
+	useEffect(() => {
+		if (!isSignedIn || !user) return
+
+		// 自分がjoinしているプロジェクトを取得
+		const assignController = createAssignmentController()
+
+		assignController
+			.getProjectsByUsername(user.username!)
+			.then((data) => setProjects(data))
+			// eslint-disable-next-line no-console
+			.catch((error) => console.error('Error fetching projects:', error))
+	}, [isSignedIn, user])
+
 	if (!isSignedIn) {
 		return null
 	}
+
 	const tabs = [
-		{ title: 'Overview', path: user.id + '/overview' },
-		{ title: 'Roadmap', path: user.id + '/roadmap' },
-		{ title: 'Burndown', path: user.id + '/burndown' },
-		{ title: 'Log', path: user.id + '/log' },
-		{ title: 'Project Settings', path: user.id + '/project-settings' },
+		{ title: 'Overview', path: user.username + '/overview' },
+		{ title: 'Roadmap', path: selectedProjectId + '/roadmap' },
+		{ title: 'Burndown', path: user.username + '/burndown' },
+		{ title: 'Log', path: user.username + '/log' },
+		{
+			title: 'Project Settings',
+			path: user.username + '/project-settings',
+		},
 	]
+
+	const handleProjectChange = (
+		event: React.ChangeEvent<HTMLSelectElement>
+	) => {
+		setSelectedProjectId(event.target.value)
+	}
 
 	return (
 		<div>
@@ -83,7 +113,21 @@ export default function Index() {
 							width: { base: '100%', sm: '62%' },
 						})}
 					>
-						<PanelView tabs={tabs} />
+						<select
+							className={css({ w: '100%' })}
+							value={selectedProjectId}
+							onChange={handleProjectChange}
+						>
+							{projects.map((project) => (
+								<option key={project.id} value={project.id}>
+									{project.name}
+								</option>
+							))}
+						</select>
+						<PanelView
+							tabs={tabs}
+							isProjectSelected={!!selectedProjectId}
+						/>
 					</div>
 					<div
 						className={css({

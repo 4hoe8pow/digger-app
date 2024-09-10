@@ -18,16 +18,16 @@ type AssignmentControllerProps = {
 export const AssignmentController = ({
 	assignmentInputPort,
 }: AssignmentControllerProps) => ({
-	assignUserToProject: (projectId: string, userId: string) => {
-		assignmentInputPort.assignUserToProject(projectId, userId)
+	assignUserToProject: (projectId: string, username: string) => {
+		assignmentInputPort.assignUserToProject(projectId, username)
 	},
 
-	removeUserFromProject: (projectId: string, userId: string) => {
-		assignmentInputPort.removeUserFromProject(projectId, userId)
+	removeUserFromProject: (projectId: string, username: string) => {
+		assignmentInputPort.removeUserFromProject(projectId, username)
 	},
 
-	getProjectsByUserId: (userId: string): Promise<ProjectDTO[]> => {
-		return assignmentInputPort.getProjectsByUserId(userId)
+	getProjectsByUsername: (username: string): Promise<ProjectDTO[]> => {
+		return assignmentInputPort.getProjectsByUsername(username)
 	},
 })
 

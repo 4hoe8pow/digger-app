@@ -2,8 +2,7 @@ import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
 
 import { createAssignmentController } from '~/components/presentations/controllers/assignmentController'
 
-import { css } from 'styled-system/css'
-import { grid, gridItem } from 'styled-system/patterns'
+import { grid } from 'styled-system/patterns'
 
 export type ProjectData = {
 	title: string
@@ -17,27 +16,18 @@ export type MemberData = {
 }
 
 export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
-	const { userId } = params
+	const { username } = params
 	//自分がjoinしているプロジェクトをすべて取得
 	const assignController = createAssignmentController()
-	const data = await assignController.getProjectsByUserId(userId!)
+	const data = await assignController.getProjectsByUsername(username!)
 	return data
 }
 
 export default function Index() {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const data = useLoaderData<typeof clientLoader>()
 	return (
 		<div className={grid({ columns: 12, gap: '6' })}>
-			<div className={gridItem({ colSpan: 3 })}>Project</div>
-			<div className={gridItem({ colSpan: 9 })}>
-				<select className={css({ w: '100%' })}>
-					{data.map((project) => (
-						<option key={project.id} value={project.id}>
-							{project.name}
-						</option>
-					))}
-				</select>
-			</div>
 			{/*
 			<div className={gridItem({ colSpan: 12 })}>
 				<table className={css({ w: '100%' })}>
