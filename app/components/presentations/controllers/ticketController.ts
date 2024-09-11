@@ -22,8 +22,13 @@ export const TicketController = ({
 	ticketInputPort,
 }: TicketControllerProps) => ({
 	//プロジェクト内のアクティブチケット取得
-	getActiveTickets: (projectId: string): Promise<TicketDTO[]> => {
-		return ticketInputPort.findActiveTickets(projectId)
+	getProjectTickets: (
+		projectId: string,
+		status: 'active' | 'all'
+	): Promise<TicketDTO[]> => {
+		return status === 'active'
+			? ticketInputPort.findActiveTickets(projectId)
+			: ticketInputPort.findProjectTickets(projectId)
 	},
 
 	//チケットに関するイベントログ取得

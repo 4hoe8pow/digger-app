@@ -7,6 +7,7 @@ import { EventsLogDTO, TicketDTO } from '../dto/ticketDTO'
 
 export type TicketInputPort = {
 	findActiveTickets(projectId: string): Promise<TicketDTO[]>
+	findProjectTickets(projectId: string): Promise<TicketDTO[]>
 	createTicket: (
 		projectId: string,
 		title: string,
@@ -18,7 +19,6 @@ export type TicketInputPort = {
 	) => Promise<void>
 	updateTicket: (
 		id: string,
-		projectId?: string,
 		title?: string,
 		description?: string | null,
 		status?: TicketStatus,

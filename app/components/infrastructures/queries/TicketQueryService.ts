@@ -17,6 +17,9 @@ export const ticketQueryService: ITicketQueryService = {
 					  details,
 					  event_types (
 						event
+					  ),
+					  tickets (
+						id
 					  )
 					`
 				)
@@ -29,7 +32,6 @@ export const ticketQueryService: ITicketQueryService = {
 			if (!data || data.length === 0) {
 				return []
 			}
-
 			const eventsLogDTO: EventsLogDTO[] = data.map(
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(eventsLog: any) => ({

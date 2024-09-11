@@ -76,7 +76,7 @@ export default function Index() {
 	const tabs = [
 		{ title: 'Overview', path: user.username + '/overview' },
 		{ title: 'Roadmap', path: selectedProjectId + '/roadmap' },
-		{ title: 'Burndown', path: user.username + '/burndown' },
+		{ title: 'Burndown', path: selectedProjectId + '/burndown' },
 		{ title: 'Events', path: selectedProjectId + '/event-log' },
 		{
 			title: 'Project Settings',

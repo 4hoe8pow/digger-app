@@ -13,7 +13,7 @@ export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
 	const { projectId } = params
 	//現在のプロジェクトのアクティブチケットを取得
 	const ticketController = createTicketController()
-	const data = await ticketController.getActiveTickets(projectId!)
+	const data = await ticketController.getProjectTickets(projectId!, 'active')
 	return data
 }
 

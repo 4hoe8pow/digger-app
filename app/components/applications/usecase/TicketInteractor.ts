@@ -80,7 +80,6 @@ export const ticketInteractor = (
 
 	async updateTicket(
 		id: string,
-		projectId?: string,
 		title?: string,
 		description?: string | null,
 		status?: TicketStatus,
@@ -165,6 +164,24 @@ export const ticketInteractor = (
 			.getEventsLog(projectId)
 			.then((eventsLog) => {
 				return eventsLog
+			})
+			.catch((error: unknown) => {
+				const typedError =
+					error instanceof Error
+						? error
+						: new Error('An unknown error occurred')
+				outputPort.presentError(typedError)
+				return []
+			})
+	},
+
+	async findProjectTickets(projectId: string): Promise<TicketDTO[]> {
+		return ticketRepository
+			.findProjectTickets(projectId)
+			.then((tickets) => {
+				const ticketDTOs = tickets.map(fromTicketToTicketDTO)
+				outputPort.presentTickets(ticketDTOs)
+				return ticketDTOs
 			})
 			.catch((error: unknown) => {
 				const typedError =

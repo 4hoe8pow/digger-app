@@ -101,4 +101,18 @@ export const ticketRepositoryImpl: ITicketRepository = {
 
 		return data.map(createTicketEntity)
 	},
+
+	// プロジェクト内のチケット取得
+	findProjectTickets: async (projectId: string): Promise<Ticket[]> => {
+		const { data, error } = await db
+			.from('tickets')
+			.select('*')
+			.eq('project_id', projectId)
+
+		if (error || !data) {
+			return []
+		}
+
+		return data.map(createTicketEntity)
+	},
 }
