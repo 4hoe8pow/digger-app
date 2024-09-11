@@ -5,12 +5,17 @@ import {
 	TicketPriority,
 } from '~/components/domains/ticket/Ticket'
 
-import { fromTicketToDTO, TicketDTO } from '../dto/ticketDTO'
-import { TicketInputPort } from '../input/TicketInputPort'
+import {
+	EventsLogDTO,
+	fromTicketToTicketDTO,
+	TicketDTO,
+} from '../dto/ticketDTO'
+import { ITicketQueryService, TicketInputPort } from '../input/TicketInputPort'
 import { TicketOutputPort } from '../output/TicketOutputPort'
 
 export const ticketInteractor = (
 	ticketRepository: ITicketRepository,
+	ticketQueryService: ITicketQueryService,
 	outputPort: TicketOutputPort
 ): TicketInputPort => ({
 	async createTicket(
@@ -33,6 +38,8 @@ export const ticketInteractor = (
 			effortEstimate,
 			status,
 			priority,
+			startedAt: new Date(),
+			completedAt: new Date(),
 			changeTitle: (newTitle: string) => ({
 				...ticket,
 				title: newTitle,
@@ -124,7 +131,7 @@ export const ticketInteractor = (
 			.findById(id)
 			.then((ticket) => {
 				if (!ticket) throw new Error('Ticket not found')
-				outputPort.presentTicket(fromTicketToDTO(ticket))
+				outputPort.presentTicket(fromTicketToTicketDTO(ticket))
 			})
 			.catch((error: unknown) => {
 				const typedError =
@@ -139,9 +146,25 @@ export const ticketInteractor = (
 		return ticketRepository
 			.findActiveTickets(projectId)
 			.then((tickets) => {
-				const ticketDTOs = tickets.map(fromTicketToDTO)
+				const ticketDTOs = tickets.map(fromTicketToTicketDTO)
 				outputPort.presentTickets(ticketDTOs)
 				return ticketDTOs
+			})
+			.catch((error: unknown) => {
+				const typedError =
+					error instanceof Error
+						? error
+						: new Error('An unknown error occurred')
+				outputPort.presentError(typedError)
+				return []
+			})
+	},
+
+	async getEventsLog(projectId: string): Promise<EventsLogDTO[]> {
+		return ticketQueryService
+			.getEventsLog(projectId)
+			.then((eventsLog) => {
+				return eventsLog
 			})
 			.catch((error: unknown) => {
 				const typedError =

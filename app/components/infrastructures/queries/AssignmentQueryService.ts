@@ -15,7 +15,7 @@ export const assignmentQueryService: IAssignmentQueryService = {
             			description,
             			is_active
           			)
-        		`
+        			`
 				)
 				.eq('username', username)
 		).then(({ data, error }) => {

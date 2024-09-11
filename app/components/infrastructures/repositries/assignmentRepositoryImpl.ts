@@ -9,7 +9,7 @@ type AssignmentType = Database['public']['Tables']['assignments']['Row']
 // アサインメントエンティティを生成するヘルパー関数
 const createAssignmentEntity = (row: AssignmentType): Assignment => ({
 	projectId: row.project_id,
-	username: row.user_id,
+	username: row.username,
 })
 
 export const assignmentRepositoryImpl: IAssignmentRepository = {
@@ -47,7 +47,7 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 			.from('assignments')
 			.upsert({
 				project_id: assignment.projectId,
-				user_id: assignment.username,
+				username: assignment.username,
 			})
 			.single()
 	},

@@ -77,7 +77,7 @@ export default function Index() {
 		{ title: 'Overview', path: user.username + '/overview' },
 		{ title: 'Roadmap', path: selectedProjectId + '/roadmap' },
 		{ title: 'Burndown', path: user.username + '/burndown' },
-		{ title: 'Log', path: user.username + '/log' },
+		{ title: 'Events', path: selectedProjectId + '/event-log' },
 		{
 			title: 'Project Settings',
 			path: user.username + '/project-settings',

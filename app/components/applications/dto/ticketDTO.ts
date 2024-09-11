@@ -7,7 +7,16 @@ export type TicketDTO = {
 	end: string
 }
 
-export const fromTicketToDTO = (ticket: Ticket): TicketDTO => ({
+export type EventsLogDTO = {
+	id: string
+	ticketId: string
+	eventType: string
+	username: string
+	eventTime: Date
+	details?: string
+}
+
+export const fromTicketToTicketDTO = (ticket: Ticket): TicketDTO => ({
 	id: ticket.id,
 	name: ticket.title,
 	start: ticket.startedAt.toISOString(),

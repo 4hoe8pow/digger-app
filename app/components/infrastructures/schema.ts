@@ -51,6 +51,63 @@ export type Database = {
           },
         ]
       }
+      event_types: {
+        Row: {
+          code: string
+          event: string | null
+        }
+        Insert: {
+          code: string
+          event?: string | null
+        }
+        Update: {
+          code?: string
+          event?: string | null
+        }
+        Relationships: []
+      }
+      history: {
+        Row: {
+          details: string | null
+          event_code: string
+          event_time: string | null
+          id: string
+          ticket_id: string
+          username: string
+        }
+        Insert: {
+          details?: string | null
+          event_code: string
+          event_time?: string | null
+          id?: string
+          ticket_id: string
+          username: string
+        }
+        Update: {
+          details?: string | null
+          event_code?: string
+          event_time?: string | null
+          id?: string
+          ticket_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "history_event_code_fkey"
+            columns: ["event_code"]
+            isOneToOne: false
+            referencedRelation: "event_types"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "history_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string | null
