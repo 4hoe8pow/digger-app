@@ -11,17 +11,14 @@ export const ticketQueryService: ITicketQueryService = {
 				.from('history')
 				.select(
 					`
-		  id,
-		  event_time,
-		  username,
-		  details,
-		  event_types (
-			event
-		  ),
-		  tickets (
-			id
-		  )
-		`
+					  id,
+					  event_time,
+					  username,
+					  details,
+					  event_types (
+						event
+					  )
+					`
 				)
 				.eq('tickets.project_id', projectId)
 		).then(({ data, error }) => {
@@ -37,8 +34,7 @@ export const ticketQueryService: ITicketQueryService = {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(eventsLog: any) => ({
 					id: eventsLog.id,
-					ticketId: eventsLog.ticketTitle,
-					eventType: eventsLog.event,
+					eventType: eventsLog.event_types.event,
 					username: eventsLog.username,
 					eventTime: parse(eventsLog.event_time),
 					details: eventsLog.details,

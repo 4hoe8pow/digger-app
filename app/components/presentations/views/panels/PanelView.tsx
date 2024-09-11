@@ -7,7 +7,7 @@ import { css } from 'styled-system/css'
 type PanelViewProps = {
 	tabs: {
 		title: string
-		path: string // pathを追加
+		path: string
 	}[]
 	isProjectSelected: boolean
 }
@@ -39,8 +39,14 @@ export function PanelView({ tabs, isProjectSelected }: PanelViewProps) {
 			</div>
 
 			<div className="window" role="tabpanel">
-				<div className={css({ minH: '500', p: '4' })}>
-					{/* Nested route content will be rendered here */}
+				<div
+					className={css({
+						minH: '62vh',
+						maxH: '62vh',
+						overflowY: 'auto',
+						p: '4',
+					})}
+				>
 					<Outlet />
 				</div>
 			</div>

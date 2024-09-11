@@ -29,7 +29,6 @@ export default function Index() {
 				<div key={item.id} className="window">
 					<header className="status-bar">
 						<p className="status-bar-field">
-							{' '}
 							{item.eventTime.toISOString()}
 						</p>
 						<p className="status-bar-field">{item.eventType}</p>

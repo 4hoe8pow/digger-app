@@ -9,7 +9,6 @@ export type TicketDTO = {
 
 export type EventsLogDTO = {
 	id: string
-	ticketId: string
 	eventType: string
 	username: string
 	eventTime: Date

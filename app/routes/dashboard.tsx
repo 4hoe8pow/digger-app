@@ -110,7 +110,7 @@ export default function Index() {
 				>
 					<div
 						className={css({
-							width: { base: '100%', sm: '62%' },
+							w: { base: '100%', sm: '62%' },
 						})}
 					>
 						<select
@@ -131,7 +131,7 @@ export default function Index() {
 					</div>
 					<div
 						className={css({
-							width: { base: '100%', sm: '38%' },
+							w: { base: '100%', sm: '38%' },
 						})}
 					>
 						<TimelineView activities={activities} />
