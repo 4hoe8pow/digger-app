@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { diffDays, format, parse } from '@formkit/tempo'
 import {
 	Chart as ChartJS,
@@ -12,8 +14,6 @@ import {
 import { Line } from 'react-chartjs-2'
 import { mean, standardDeviation } from 'simple-statistics'
 
-import { TicketDTO } from '~/components/applications/dto/ticketDTO'
-
 import { css } from 'styled-system/css'
 
 // Register chart elements
@@ -27,7 +27,14 @@ ChartJS.register(
 	Legend
 )
 
-// Props types for MetricsTable component
+type TicketDTO = {
+	id: number
+	username: string
+	start: string
+	end: string
+	status: string
+}
+
 type MetricsTableProps = {
 	metrics: Array<{
 		username: string
@@ -48,7 +55,7 @@ interface BurndownChartProps {
 	tickets: TicketDTO[]
 }
 
-// Helper functions
+// Helper Functions
 const getDateRange = (tickets: TicketDTO[]) =>
 	tickets.reduce(
 		({ min, max }, { start, end }) => ({
@@ -80,20 +87,16 @@ const calculateMetrics = (tickets: TicketDTO[], dateRange: Date[]) => {
 	const averageResponseTime =
 		openDays.reduce((acc, days) => acc + days, 0) / tickets.length
 
-	// Calculate turnover rate and delay rate
 	const today = new Date()
 	const openTickets = tickets.filter((ticket) => ticket.status === 'open')
 	const delayedTickets = openTickets.filter(
 		(ticket) => parse(ticket.end) < today
 	)
 
-	// New turnover rate definition
 	const turnoverRate = mean(openDays)
-
-	// Calculate delay rate
-	const delayRate = delayedTickets.length / openTickets.length
-
-	// Total closed tickets count
+	const delayRate = openTickets.length
+		? delayedTickets.length / openTickets.length
+		: 0
 	const totalClosed = tickets.length - openTickets.length
 
 	return {
@@ -108,7 +111,7 @@ const calculateMetrics = (tickets: TicketDTO[], dateRange: Date[]) => {
 const calculateZScore = (value: number, mean: number, stdDev: number) =>
 	((mean - value) / stdDev) * 10 + 50
 
-// MetricsTable Component
+// Components
 const MetricsTable = ({ metrics, styles }: MetricsTableProps) => (
 	<table className={styles.table}>
 		<thead>
@@ -151,17 +154,13 @@ const MetricsTable = ({ metrics, styles }: MetricsTableProps) => (
 	</table>
 )
 
-// Chart Component
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Chart = ({ data, options }: { data: any; options: any }) => {
-	return (
-		<div className={css({ overflowX: 'auto', maxW: '100%' })}>
-			<Line data={data} options={options} key={JSON.stringify(data)} />
-		</div>
-	)
-}
+const Chart = ({ data, options }: { data: any; options: any }) => (
+	<div className={css({ overflowX: 'auto', maxW: '100%' })}>
+		<Line data={data} options={options} />
+	</div>
+)
 
-// BurndownChart Component
 const BurndownChart = ({ tickets }: BurndownChartProps) => {
 	const styles = {
 		container: css({ overflowX: 'auto', maxW: '100%' }),
@@ -176,103 +175,118 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 	}
 
 	const { min: startDate, max: endDate } = getDateRange(tickets)
-	const dateRange = generateDateRange(new Date(startDate), new Date(endDate))
+	const dateRange = useMemo(
+		() => generateDateRange(new Date(startDate), new Date(endDate)),
+		[startDate, endDate]
+	)
 
-	const datasets = Object.entries(
-		tickets.reduce(
-			(acc, ticket) => {
-				if (ticket.status === 'open') {
+	const datasets = useMemo(
+		() =>
+			Object.entries(
+				tickets.reduce(
+					(acc, ticket) => {
+						if (ticket.status === 'open') {
+							acc[ticket.username] = acc[ticket.username] || []
+							acc[ticket.username].push(ticket)
+						}
+						return acc
+					},
+					{} as Record<string, TicketDTO[]>
+				)
+			).map(([username, userTickets]) => ({
+				label: username,
+				data: dateRange.map(
+					(date) =>
+						userTickets.filter(
+							(ticket) =>
+								parse(ticket.start) <= date &&
+								parse(ticket.end) >= date
+						).length
+				),
+				borderColor: `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${
+					Math.random() * 256
+				})`,
+			})),
+		[tickets, dateRange]
+	)
+
+	const chartData = useMemo(
+		() => ({
+			labels: dateRange.map((date) => format(date, 'M/D')),
+			datasets,
+		}),
+		[dateRange, datasets]
+	)
+
+	const options = useMemo(
+		() => ({
+			scales: {
+				y: { beginAtZero: true, ticks: { stepSize: 1 } },
+			},
+		}),
+		[]
+	)
+
+	const userMetrics = useMemo(() => {
+		const metrics = Object.entries(
+			tickets.reduce(
+				(acc, ticket) => {
 					acc[ticket.username] = acc[ticket.username] || []
 					acc[ticket.username].push(ticket)
-				}
-				return acc
-			},
-			{} as Record<string, TicketDTO[]>
+					return acc
+				},
+				{} as Record<string, TicketDTO[]>
+			)
+		).map(([username, userTickets]) => {
+			const {
+				averageDailyTickets,
+				averageResponseTime,
+				turnoverRate,
+				delayRate,
+				totalClosed,
+			} = calculateMetrics(userTickets, dateRange)
+
+			return {
+				username,
+				averageDailyTickets,
+				averageResponseTime,
+				turnoverRate,
+				delayRate,
+				totalClosed,
+			}
+		})
+
+		const turnoverRates = metrics.map((metric) => metric.turnoverRate)
+		const meanTurnoverRate = mean(turnoverRates)
+		const stdDevTurnoverRate = standardDeviation(turnoverRates)
+
+		const averageResponseTimes = metrics.map(
+			(metric) => metric.averageResponseTime
 		)
-	).map(([username, userTickets]) => ({
-		label: username,
-		data: dateRange.map(
-			(date) =>
-				userTickets.filter(
-					(ticket) =>
-						parse(ticket.start) <= date && parse(ticket.end) >= date
-				).length
-		),
-		borderColor: `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${
-			Math.random() * 256
-		})`,
-	}))
+		const meanResponseTime = mean(averageResponseTimes)
+		const stdDevResponseTime = standardDeviation(averageResponseTimes)
 
-	const chartData = {
-		labels: dateRange.map((date) => format(date, 'M/D')),
-		datasets,
-	}
-
-	const options = {
-		aspectRatio: -0.62,
-		scales: {
-			y: { beginAtZero: true, ticks: { stepSize: 1 } },
-		},
-	}
-
-	const userMetrics = Object.entries(
-		tickets.reduce(
-			(acc, ticket) => {
-				acc[ticket.username] = acc[ticket.username] || []
-				acc[ticket.username].push(ticket)
-				return acc
-			},
-			{} as Record<string, TicketDTO[]>
-		)
-	).map(([username, userTickets]) => {
-		const {
-			averageDailyTickets,
-			averageResponseTime,
-			turnoverRate,
-			delayRate,
-			totalClosed,
-		} = calculateMetrics(userTickets, dateRange)
-
-		return {
-			username,
-			averageDailyTickets,
-			averageResponseTime,
-			turnoverRate,
-			delayRate,
-			totalClosed,
-		}
-	})
-
-	const turnoverRates = userMetrics.map((metric) => metric.turnoverRate)
-	const meanTurnoverRate = mean(turnoverRates)
-	const stdDevTurnoverRate = standardDeviation(turnoverRates)
-
-	const averageResponseTimes = userMetrics.map(
-		(metric) => metric.averageResponseTime
-	)
-	const meanResponseTime = mean(averageResponseTimes)
-	const stdDevResponseTime = standardDeviation(averageResponseTimes)
-
-	const sortedMetrics = userMetrics
-		.map((metric) => ({
-			...metric,
-			turnoverRateZScore: calculateZScore(
-				metric.turnoverRate,
-				meanTurnoverRate,
-				stdDevTurnoverRate
-			),
-			responseTimeZScore: calculateZScore(
-				metric.averageResponseTime,
-				meanResponseTime,
-				stdDevResponseTime
-			),
-		}))
-		.sort((a, b) => b.turnoverRateZScore - a.turnoverRateZScore)
+		return metrics
+			.map((metric) => ({
+				...metric,
+				turnoverRateZScore: calculateZScore(
+					metric.turnoverRate,
+					meanTurnoverRate,
+					stdDevTurnoverRate
+				),
+				responseTimeZScore: calculateZScore(
+					metric.averageResponseTime,
+					meanResponseTime,
+					stdDevResponseTime
+				),
+			}))
+			.sort((a, b) => b.turnoverRateZScore - a.turnoverRateZScore)
+	}, [tickets, dateRange])
 
 	return (
 		<div>
 			<Chart data={chartData} options={options} />
-			<MetricsTable metrics={sortedMetrics} styles={styles} />
+			<MetricsTable metrics={userMetrics} styles={styles} />
 		</div>
 	)
 }
