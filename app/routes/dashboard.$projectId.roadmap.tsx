@@ -1,13 +1,30 @@
 import { useState } from 'react'
 
-import { ClientLoaderFunctionArgs, useLoaderData } from '@remix-run/react'
+import {
+	ClientActionFunctionArgs,
+	ClientLoaderFunctionArgs,
+	useLoaderData,
+} from '@remix-run/react'
+import { validationError } from '@rvf/remix'
 
 import { createTicketController } from '~/components/presentations/controllers/ticketController'
 import { Modal } from '~/components/presentations/views/Modal'
 import { TicketForm } from '~/components/presentations/views/TicketForm'
 import RoadmapChart from '~/components/presentations/views/panels/RoadmapChart'
+import { validator } from '~/components/presentations/views/validation/ticketSchema'
 
 import { grid, gridItem } from 'styled-system/patterns'
+
+export async function clientAction({ request }: ClientActionFunctionArgs) {
+	const result = await validator.validate(await request.formData())
+
+	if (result.error) {
+		return validationError(result.error, result.submittedData)
+	}
+	// eslint-disable-next-line no-console
+	console.log('in-action:', result.data)
+	return result.data
+}
 
 export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
 	const { projectId } = params
