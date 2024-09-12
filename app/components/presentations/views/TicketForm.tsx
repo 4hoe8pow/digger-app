@@ -5,6 +5,9 @@ import { clientAction } from '~/routes/dashboard.$projectId.roadmap'
 
 import { ticketDefaultValue, validator } from './validation/ticketSchema'
 
+import { css } from 'styled-system/css'
+import { flex, grid, gridItem } from 'styled-system/patterns'
+
 type InputFieldProps = {
 	label: string
 	error?: string | null
@@ -25,12 +28,24 @@ type TextAreaFieldProps = {
 
 export function InputField({ label, error, inputProps }: InputFieldProps) {
 	return (
-		<div>
-			<label htmlFor={inputProps.id}>
-				{label}
-				<input {...inputProps} />
-			</label>
-			{error && <span>{error}</span>}
+		<div className={grid({ columns: 12, columnGap: '1' })}>
+			{/* Label */}
+			<div className={gridItem({ colSpan: 4 })}>
+				<label
+					htmlFor={inputProps.id}
+					className={css({ fontWeight: 'bold' })}
+				>
+					{label}
+				</label>
+			</div>
+			{/* Input */}
+			<div className={gridItem({ colSpan: 8 })}>
+				<input {...inputProps} className={css({ w: '100%' })} />
+			</div>
+			{/* Error */}
+			<div className={gridItem({ colSpan: 12, textAlign: 'right' })}>
+				{error && <span>{error}</span>}
+			</div>
 		</div>
 	)
 }
@@ -41,12 +56,27 @@ export function TextAreaField({
 	inputProps,
 }: TextAreaFieldProps) {
 	return (
-		<div>
-			<label htmlFor={inputProps.id}>
-				{label}
-				<textarea {...inputProps} />
-			</label>
-			{error && <span>{error}</span>}
+		<div className={grid({ columns: 12, columnGap: '1', rowGap: '0.5' })}>
+			{/* Label */}
+			<div className={gridItem({ colSpan: 4 })}>
+				<label
+					htmlFor={inputProps.id}
+					className={css({ fontWeight: 'bold' })}
+				>
+					{label}
+				</label>
+			</div>
+			{/* TextArea */}
+			<div className={gridItem({ colSpan: 8 })}>
+				<textarea
+					{...inputProps}
+					className={css({ w: '100%', minH: '10rem' })}
+				/>
+			</div>
+			{/* Error */}
+			<div className={gridItem({ colSpan: 12, textAlign: 'right' })}>
+				{error && <span>{error}</span>}
+			</div>
 		</div>
 	)
 }
@@ -67,9 +97,6 @@ export function TicketForm({ onClose }: Props) {
 		method: 'post',
 	})
 
-	const titleError = form.error('title') ?? undefined
-	const descriptionError = form.error('description') ?? undefined
-
 	return (
 		<div className="window">
 			<div className="title-bar">
@@ -79,7 +106,11 @@ export function TicketForm({ onClose }: Props) {
 				</div>
 			</div>
 			<div className="window-body">
-				<form method="post" {...form.getFormProps()}>
+				<form
+					method="post"
+					{...form.getFormProps()}
+					className={flex({ direction: 'column', rowGap: '8' })}
+				>
 					<InputField
 						label="Title"
 						inputProps={{
@@ -87,7 +118,7 @@ export function TicketForm({ onClose }: Props) {
 							id: 'title',
 							type: 'text',
 						}}
-						error={titleError}
+						error={form.error('title') ?? undefined}
 					/>
 					<TextAreaField
 						label="Description"
@@ -95,7 +126,7 @@ export function TicketForm({ onClose }: Props) {
 							...form.getInputProps('description'),
 							id: 'description',
 						}}
-						error={descriptionError}
+						error={form.error('description') ?? undefined}
 					/>
 					<InputField
 						label="Estimate Effort"
@@ -104,13 +135,17 @@ export function TicketForm({ onClose }: Props) {
 							id: 'estimateEffort',
 							type: 'text',
 						}}
+						error={form.error('estimateEffort') ?? undefined}
 					/>
-					<button
-						type="submit"
-						disabled={form.formState.isSubmitting}
-					>
-						CREATE
-					</button>
+					<div className={css({ textAlign: 'right' })}>
+						<button
+							type="submit"
+							disabled={form.formState.isSubmitting}
+							className={css({ w: '38%' })}
+						>
+							CREATE
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>
