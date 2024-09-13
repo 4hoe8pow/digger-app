@@ -1,7 +1,8 @@
 export enum TicketStatus {
-	OPEN = 'open',
-	CANCEL = 'cancel',
-	CLOSED = 'closed',
+	PENDING = 'pending',
+	ACTIVE = 'active',
+	CANCELLED = 'cancelled',
+	RESOLVED = 'resolved',
 }
 
 export enum TicketPriority {
@@ -16,7 +17,6 @@ export type Ticket = {
 	updatedAt: Date
 	title: string
 	description: string | null
-	projectId: string
 	username: string
 	status: TicketStatus
 	priority: TicketPriority

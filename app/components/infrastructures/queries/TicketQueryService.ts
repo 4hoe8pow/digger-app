@@ -8,18 +8,20 @@ export const ticketQueryService: ITicketQueryService = {
 	async getEventsLog(projectId: string): Promise<EventsLogDTO[]> {
 		return Promise.resolve(
 			db
-				.from('history')
+				.from('ticket_histories')
 				.select(
 					`
 					  id,
 					  event_time,
-					  username,
 					  details,
 					  event_types (
 						event
 					  ),
 					  tickets (
 						id
+					  ),
+					  users (
+						clerk_username
 					  )
 					`
 				)
@@ -37,7 +39,7 @@ export const ticketQueryService: ITicketQueryService = {
 				(eventsLog: any) => ({
 					id: eventsLog.id,
 					eventType: eventsLog.event_types.event,
-					username: eventsLog.username,
+					username: eventsLog.users.clerk_username,
 					eventTime: parse(eventsLog.event_time),
 					details: eventsLog.details,
 				})

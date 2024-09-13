@@ -9,15 +9,19 @@ export const assignmentQueryService: IAssignmentQueryService = {
 				.from('assignments')
 				.select(
 					`
-					projects (
+					projects!inner (
 						id,
             			name,
             			description,
             			is_active
-          			)
+          			),
+					users!inner (
+						id,
+						clerk_username
+					)
         			`
 				)
-				.eq('username', username)
+				.eq('users.clerk_username', username)
 		).then(({ data, error }) => {
 			if (error) {
 				throw new Error(error.message)
@@ -26,6 +30,8 @@ export const assignmentQueryService: IAssignmentQueryService = {
 			if (!data || data.length === 0) {
 				return []
 			}
+
+			console.log('DATA', data)
 
 			const projectDTOs: ProjectDTO[] = data.map(
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any

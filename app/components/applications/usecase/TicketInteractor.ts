@@ -33,7 +33,6 @@ export const ticketInteractor = (
 			updatedAt: new Date(),
 			title,
 			description,
-			projectId,
 			username,
 			effortEstimate,
 			status,

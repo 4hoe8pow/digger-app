@@ -28,7 +28,7 @@ ChartJS.register(
 )
 
 type TicketDTO = {
-	id: number
+	id: string
 	username: string
 	start: string
 	end: string
@@ -79,24 +79,29 @@ const calculateMetrics = (tickets: TicketDTO[], dateRange: Date[]) => {
 					parse(ticket.start) <= date && parse(ticket.end) >= date
 			).length
 	)
-	const averageDailyTickets = mean(dailyTicketCounts)
+	const averageDailyTickets =
+		dailyTicketCounts.length > 0 ? mean(dailyTicketCounts) : 0
 
 	const openDays = tickets.map((ticket) =>
 		diffDays(parse(ticket.end), parse(ticket.start))
 	)
 	const averageResponseTime =
-		openDays.reduce((acc, days) => acc + days, 0) / tickets.length
+		tickets.length > 0
+			? openDays.reduce((acc, days) => acc + days, 0) / tickets.length
+			: 0
 
 	const today = new Date()
-	const openTickets = tickets.filter((ticket) => ticket.status === 'open')
+	const openTickets = tickets.filter(
+		(ticket) => ticket.status === 'pending' || ticket.status === 'active'
+	)
+
 	const delayedTickets = openTickets.filter(
 		(ticket) => parse(ticket.end) < today
 	)
 
-	const turnoverRate = mean(openDays)
-	const delayRate = openTickets.length
-		? delayedTickets.length / openTickets.length
-		: 0
+	const turnoverRate = openDays.length > 0 ? mean(openDays) : 0
+	const delayRate =
+		openTickets.length > 0 ? delayedTickets.length / openTickets.length : 0
 	const totalClosed = tickets.length - openTickets.length
 
 	return {
@@ -185,7 +190,10 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 			Object.entries(
 				tickets.reduce(
 					(acc, ticket) => {
-						if (ticket.status === 'open') {
+						if (
+							ticket.status === 'pending' ||
+							ticket.status === 'active'
+						) {
 							acc[ticket.username] = acc[ticket.username] || []
 							acc[ticket.username].push(ticket)
 						}
@@ -257,14 +265,20 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 		})
 
 		const turnoverRates = metrics.map((metric) => metric.turnoverRate)
-		const meanTurnoverRate = mean(turnoverRates)
-		const stdDevTurnoverRate = standardDeviation(turnoverRates)
+		const meanTurnoverRate =
+			turnoverRates.length > 0 ? mean(turnoverRates) : 0
+		const stdDevTurnoverRate =
+			turnoverRates.length > 0 ? standardDeviation(turnoverRates) : 0
 
 		const averageResponseTimes = metrics.map(
 			(metric) => metric.averageResponseTime
 		)
-		const meanResponseTime = mean(averageResponseTimes)
-		const stdDevResponseTime = standardDeviation(averageResponseTimes)
+		const meanResponseTime =
+			averageResponseTimes.length > 0 ? mean(averageResponseTimes) : 0
+		const stdDevResponseTime =
+			averageResponseTimes.length > 0
+				? standardDeviation(averageResponseTimes)
+				: 0
 
 		return metrics
 			.map((metric) => ({

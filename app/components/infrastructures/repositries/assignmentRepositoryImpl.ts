@@ -27,20 +27,6 @@ export const assignmentRepositoryImpl: IAssignmentRepository = {
 		return data.map(createAssignmentEntity)
 	},
 
-	// ユーザーIDでアサインメントを検索
-	findByUserId: async (username: string): Promise<Assignment[]> => {
-		const { data, error } = await db
-			.from('assignments')
-			.select('*')
-			.eq('user_id', username)
-
-		if (error) {
-			return []
-		}
-
-		return data.map(createAssignmentEntity)
-	},
-
 	// アサインメントを保存
 	save: async (assignment: Assignment): Promise<void> => {
 		await db

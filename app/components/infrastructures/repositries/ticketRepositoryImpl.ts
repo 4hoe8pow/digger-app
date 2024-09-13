@@ -19,8 +19,7 @@ const createTicketEntity = (row: TicketType): Ticket => ({
 	updatedAt: parse(row.updated_at!),
 	title: row.title,
 	description: row.description,
-	projectId: row.project_id,
-	username: row.username,
+	username: row.users.clerk_username,
 	effortEstimate: row.effort_estimate!,
 	startedAt: parse(row.started_at!),
 	completedAt: parse(row.completed_at!),
@@ -73,7 +72,6 @@ export const ticketRepositoryImpl: ITicketRepository = {
 				updated_at: ticket.updatedAt.toISOString(),
 				title: ticket.title,
 				description: ticket.description,
-				project_id: ticket.projectId,
 				username: ticket.username,
 				effort_estimate: ticket.effortEstimate,
 				status: ticket.status,
@@ -91,10 +89,27 @@ export const ticketRepositoryImpl: ITicketRepository = {
 	findActiveTickets: async (projectId: string): Promise<Ticket[]> => {
 		const { data, error } = await db
 			.from('tickets')
-			.select('*')
+			.select(
+				`
+					id,
+					created_at,
+					updated_at,
+					title,
+					description,
+					status,
+					priority,
+					effort_estimate,
+					started_at,
+					completed_at,
+					users (
+						clerk_username
+					)
+				`
+			)
 			.eq('project_id', projectId)
-			.eq('status', 'open')
+			.in('status', [TicketStatus.PENDING, TicketStatus.ACTIVE])
 
+		console.info('DATA1', data)
 		if (error || !data) {
 			return []
 		}
@@ -106,8 +121,26 @@ export const ticketRepositoryImpl: ITicketRepository = {
 	findProjectTickets: async (projectId: string): Promise<Ticket[]> => {
 		const { data, error } = await db
 			.from('tickets')
-			.select('*')
+			.select(
+				`
+					id,
+					created_at,
+					updated_at,
+					title,
+					description,
+					status,
+					priority,
+					effort_estimate,
+					started_at,
+					completed_at,
+					users (
+						clerk_username
+					)
+				`
+			)
 			.eq('project_id', projectId)
+
+		console.info('DATA2', data)
 
 		if (error || !data) {
 			return []
