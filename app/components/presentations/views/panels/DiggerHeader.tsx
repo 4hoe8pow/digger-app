@@ -2,7 +2,6 @@ import {
 	SignedIn,
 	SignedOut,
 	SignInButton,
-	SignOutButton,
 	SignUpButton,
 	UserButton,
 } from '@clerk/remix'
@@ -68,14 +67,13 @@ export const DiggerHeader = () => {
 					👤User Settings
 				</Link>
 				<SignedIn>
-					<UserButton />
-					<SignOutButton />
+					<div className={styles.icon}>
+						<UserButton />
+					</div>
 				</SignedIn>
 				<SignedOut>
-					<div>
+					<div className={styles.icon}>
 						<SignInButton />
-					</div>
-					<div>
 						<SignUpButton />
 					</div>
 				</SignedOut>

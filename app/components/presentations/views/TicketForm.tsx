@@ -137,6 +137,16 @@ export function TicketForm({ onClose }: Props) {
 						}}
 						error={form.error('estimateEffort') ?? undefined}
 					/>
+					<InputField
+						label="Due Date"
+						inputProps={{
+							...form.getInputProps('dueDate'),
+							id: 'dueDate',
+							type: 'text',
+						}}
+						error={form.error('estimateEffort') ?? undefined}
+					/>
+
 					<div className={css({ textAlign: 'right' })}>
 						<button
 							type="submit"
