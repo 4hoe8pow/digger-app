@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 
 import {
 	SignedIn,
-	UserButton,
-	SignOutButton,
 	SignedOut,
 	SignInButton,
 	SignUpButton,
@@ -93,12 +91,6 @@ export default function Index() {
 	return (
 		<div>
 			<SignedIn>
-				<div>
-					<UserButton />
-				</div>
-				<div>
-					<SignOutButton />
-				</div>
 				<div
 					className={css({
 						display: 'flex',

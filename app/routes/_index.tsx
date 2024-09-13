@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/remix'
+import { SignedIn, SignedOut } from '@clerk/remix'
 import { Link } from '@remix-run/react'
 
 export default function Index() {
@@ -7,14 +7,7 @@ export default function Index() {
 			<SignedIn>
 				<Link to={'/dashboard'}>Go to Dashboard</Link>
 			</SignedIn>
-			<SignedOut>
-				<div>
-					<SignInButton />
-				</div>
-				<div>
-					<SignUpButton />
-				</div>
-			</SignedOut>
+			<SignedOut>Something wrong</SignedOut>
 		</div>
 	)
 }

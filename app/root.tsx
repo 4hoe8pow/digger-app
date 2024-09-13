@@ -8,6 +8,7 @@ import {
 	ScrollRestoration,
 } from '@remix-run/react'
 
+import { DiggerHeader } from './components/presentations/views/panels/DiggerHeader'
 import styles from './index.css?url'
 
 import '98.css'
@@ -36,7 +37,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function App() {
-	return <Outlet />
+	return (
+		<>
+			<DiggerHeader />
+			<Outlet />
+		</>
+	)
 }
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
