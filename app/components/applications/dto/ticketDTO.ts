@@ -1,6 +1,6 @@
 import { Ticket } from '~/components/domains/ticket/Ticket'
 
-export type TicketDTO = {
+export type TicketViewDTO = {
 	id: string
 	username: string
 	name: string
@@ -17,7 +17,7 @@ export type EventsLogDTO = {
 	details?: string
 }
 
-export const fromTicketToTicketDTO = (ticket: Ticket): TicketDTO => ({
+export const fromTicketToTicketViewDTO = (ticket: Ticket): TicketViewDTO => ({
 	id: ticket.id,
 	username: ticket.username,
 	name: ticket.title,

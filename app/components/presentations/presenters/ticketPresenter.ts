@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import { TicketDTO } from '~/components/applications/dto/ticketDTO'
+import { TicketViewDTO } from '~/components/applications/dto/ticketDTO'
 import { TicketOutputPort } from '~/components/applications/output/TicketOutputPort'
 
 export const ticketPresenter: TicketOutputPort = {
-	presentTicket: (ticket: TicketDTO) => {
+	presentTicket: (ticket: TicketViewDTO) => {
 		console.log('Ticket Details:', ticket)
 		// ここでチケット詳細をUIに反映する処理を実装
 	},
 
-	presentTickets: (tickets: TicketDTO[]) => {
+	presentTickets: (tickets: TicketViewDTO[]) => {
 		console.log('List of Tickets:', tickets)
 		// ここでチケットのリストをUIに反映する処理を実装
 	},

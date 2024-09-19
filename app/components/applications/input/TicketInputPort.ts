@@ -3,11 +3,11 @@ import {
 	TicketPriority,
 } from '~/components/domains/ticket/Ticket'
 
-import { EventsLogDTO, TicketDTO } from '../dto/ticketDTO'
+import { EventsLogDTO, TicketViewDTO } from '../dto/ticketDTO'
 
 export type TicketInputPort = {
-	findActiveTickets(projectId: string): Promise<TicketDTO[]>
-	findProjectTickets(projectId: string): Promise<TicketDTO[]>
+	findActiveTickets(projectId: string): Promise<TicketViewDTO[]>
+	findProjectTickets(projectId: string): Promise<TicketViewDTO[]>
 	createTicket: (
 		projectId: string,
 		title: string,

@@ -1,6 +1,6 @@
 import {
 	EventsLogDTO,
-	TicketDTO,
+	TicketViewDTO,
 } from '~/components/applications/dto/ticketDTO'
 import {
 	ITicketQueryService,
@@ -25,7 +25,7 @@ export const TicketController = ({
 	getProjectTickets: (
 		projectId: string,
 		status: 'active' | 'all'
-	): Promise<TicketDTO[]> => {
+	): Promise<TicketViewDTO[]> => {
 		return status === 'active'
 			? ticketInputPort.findActiveTickets(projectId)
 			: ticketInputPort.findProjectTickets(projectId)

@@ -7,8 +7,8 @@ import {
 
 import {
 	EventsLogDTO,
-	fromTicketToTicketDTO,
-	TicketDTO,
+	fromTicketToTicketViewDTO,
+	TicketViewDTO,
 } from '../dto/ticketDTO'
 import { ITicketQueryService, TicketInputPort } from '../input/TicketInputPort'
 import { TicketOutputPort } from '../output/TicketOutputPort'
@@ -129,7 +129,7 @@ export const ticketInteractor = (
 			.findById(id)
 			.then((ticket) => {
 				if (!ticket) throw new Error('Ticket not found')
-				outputPort.presentTicket(fromTicketToTicketDTO(ticket))
+				outputPort.presentTicket(fromTicketToTicketViewDTO(ticket))
 			})
 			.catch((error: unknown) => {
 				const typedError =
@@ -140,11 +140,11 @@ export const ticketInteractor = (
 			})
 	},
 
-	async findActiveTickets(projectId: string): Promise<TicketDTO[]> {
+	async findActiveTickets(projectId: string): Promise<TicketViewDTO[]> {
 		return ticketRepository
 			.findActiveTickets(projectId)
 			.then((tickets) => {
-				const ticketDTOs = tickets.map(fromTicketToTicketDTO)
+				const ticketDTOs = tickets.map(fromTicketToTicketViewDTO)
 				outputPort.presentTickets(ticketDTOs)
 				return ticketDTOs
 			})
@@ -174,11 +174,11 @@ export const ticketInteractor = (
 			})
 	},
 
-	async findProjectTickets(projectId: string): Promise<TicketDTO[]> {
+	async findProjectTickets(projectId: string): Promise<TicketViewDTO[]> {
 		return ticketRepository
 			.findProjectTickets(projectId)
 			.then((tickets) => {
-				const ticketDTOs = tickets.map(fromTicketToTicketDTO)
+				const ticketDTOs = tickets.map(fromTicketToTicketViewDTO)
 				outputPort.presentTickets(ticketDTOs)
 				return ticketDTOs
 			})

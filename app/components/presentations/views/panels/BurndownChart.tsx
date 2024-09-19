@@ -27,7 +27,7 @@ ChartJS.register(
 	Legend
 )
 
-type TicketDTO = {
+type TicketViewDTO = {
 	id: string
 	username: string
 	start: string
@@ -52,11 +52,11 @@ type MetricsTableProps = {
 }
 
 interface BurndownChartProps {
-	tickets: TicketDTO[]
+	tickets: TicketViewDTO[]
 }
 
 // Helper Functions
-const getDateRange = (tickets: TicketDTO[]) =>
+const getDateRange = (tickets: TicketViewDTO[]) =>
 	tickets.reduce(
 		({ min, max }, { start, end }) => ({
 			min: Math.min(min, parse(start).getTime()),
@@ -71,7 +71,7 @@ const generateDateRange = (startDate: Date, endDate: Date) =>
 		(_, i) => new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000)
 	)
 
-const calculateMetrics = (tickets: TicketDTO[], dateRange: Date[]) => {
+const calculateMetrics = (tickets: TicketViewDTO[], dateRange: Date[]) => {
 	const dailyTicketCounts = dateRange.map(
 		(date) =>
 			tickets.filter(
@@ -199,7 +199,7 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 						}
 						return acc
 					},
-					{} as Record<string, TicketDTO[]>
+					{} as Record<string, TicketViewDTO[]>
 				)
 			).map(([username, userTickets]) => ({
 				label: username,
@@ -243,7 +243,7 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 					acc[ticket.username].push(ticket)
 					return acc
 				},
-				{} as Record<string, TicketDTO[]>
+				{} as Record<string, TicketViewDTO[]>
 			)
 		).map(([username, userTickets]) => {
 			const {

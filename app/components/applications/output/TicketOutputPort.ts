@@ -1,8 +1,8 @@
-import { TicketDTO } from '../dto/ticketDTO'
+import { TicketViewDTO } from '../dto/ticketDTO'
 
 export type TicketOutputPort = {
-	presentTicket: (ticket: TicketDTO) => void
-	presentTickets: (tickets: TicketDTO[]) => void
+	presentTicket: (ticket: TicketViewDTO) => void
+	presentTickets: (tickets: TicketViewDTO[]) => void
 	presentTicketCreationSuccess: () => void
 	presentTicketUpdateSuccess: () => void
 	presentTicketDeletionSuccess: () => void

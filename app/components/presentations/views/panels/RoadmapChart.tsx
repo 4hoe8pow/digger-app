@@ -1,15 +1,15 @@
 import { parse, diffDays, format } from '@formkit/tempo'
 
-import { TicketDTO } from '~/components/applications/dto/ticketDTO'
+import { TicketViewDTO } from '~/components/applications/dto/ticketDTO'
 
 import { css } from 'styled-system/css'
 
 interface RoadmapChartProps {
-	tickets: TicketDTO[]
+	tickets: TicketViewDTO[]
 }
 
 // Helper function to get the date range from tickets
-const getDateRange = (tickets: TicketDTO[]) => {
+const getDateRange = (tickets: TicketViewDTO[]) => {
 	const dates = tickets.flatMap(({ start, end }) =>
 		[start, end].map((d) => parse(d).getTime())
 	)
