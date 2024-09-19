@@ -1,6 +1,7 @@
 import { IProjectRepository } from '~/components/domains/project/IProjectRepository'
 import { Project } from '~/components/domains/project/Project'
 
+import { fromProjectToProjectViewDTO, ProjectViewDTO } from '../dto/projectDTO'
 import { ProjectInputPort } from '../input/ProjectIuputPort'
 import { ProjectOutputPort } from '../output/ProjectOutputPort'
 
@@ -10,12 +11,12 @@ export const projectInteractor = (
 ): ProjectInputPort => ({
 	async createProject(name, description, is_active) {
 		const project: Project = {
+			id: '',
 			name,
 			description,
 			is_active,
-			changeName: () => project,
-			changeStatus: () => project,
 		}
+
 		projectRepository
 			.save(project)
 			.then(() => outputPort.presentProjectCreationSuccess())
@@ -39,9 +40,10 @@ export const projectInteractor = (
 			.then((project) => {
 				if (!project) throw new Error('Project not found')
 
-				if (name) project.changeName(name)
+				// プロパティを直接更新
+				if (name) project.name = name
 				if (description !== undefined) project.description = description
-				if (is_active) project.changeStatus(is_active)
+				if (is_active !== undefined) project.is_active = is_active
 
 				return projectRepository.save(project)
 			})
@@ -68,12 +70,14 @@ export const projectInteractor = (
 			})
 	},
 
-	async getProjectById(id: string): Promise<void> {
-		projectRepository
+	async getProjectById(id: string): Promise<ProjectViewDTO> {
+		return projectRepository
 			.findById(id)
 			.then((project) => {
 				if (!project) throw new Error('Project not found')
-				outputPort.presentProject(project)
+				const dto = fromProjectToProjectViewDTO(project)
+				outputPort.presentProject(dto)
+				return dto
 			})
 			.catch((error: unknown) => {
 				const typedError =
@@ -81,6 +85,7 @@ export const projectInteractor = (
 						? error
 						: new Error('An unknown error occurred')
 				outputPort.presentError(typedError)
+				return Promise.reject(typedError)
 			})
 	},
 })

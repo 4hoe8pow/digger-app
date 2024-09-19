@@ -16,7 +16,11 @@ export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
 export default function Index() {
 	const data = useLoaderData<typeof clientLoader>()
 	const styles = {
-		container: grid({ columns: 1, gap: '1', w: '62%' }),
+		container: grid({
+			columns: 1,
+			gap: '1',
+			w: { base: '100%', sm: '62%' },
+		}),
 	}
 
 	const sortedHistory = data

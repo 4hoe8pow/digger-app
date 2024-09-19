@@ -1,4 +1,4 @@
-import { ProjectDTO } from '~/components/applications/dto/projectDTO'
+import { ProjectViewDTO } from '~/components/applications/dto/projectDTO'
 import { AssignmentOutputPort } from '~/components/applications/output/AssignmentOutputPort'
 
 /* eslint-disable no-console */
@@ -11,7 +11,7 @@ export const assignmentPresenter: AssignmentOutputPort = {
 		console.log('Assignment deletion succeeded.')
 	},
 
-	presentProjects: (username: ProjectDTO[]) => {
+	presentProjects: (username: ProjectViewDTO[]) => {
 		console.log('Projects:', username)
 	},
 

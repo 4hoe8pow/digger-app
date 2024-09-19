@@ -1,8 +1,7 @@
-import { Project } from '~/components/domains/project/Project'
+import { ProjectViewDTO } from '../dto/projectDTO'
 
 export type ProjectOutputPort = {
-	presentProject: (project: Project) => void
-	presentProjects: (projects: Project[]) => void
+	presentProject: (project: ProjectViewDTO) => void
 	presentProjectCreationSuccess: () => void
 	presentProjectUpdateSuccess: () => void
 	presentProjectDeletionSuccess: () => void

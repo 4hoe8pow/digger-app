@@ -1,7 +1,7 @@
 import { Assignment } from '~/components/domains/assign/Assignment'
 import { IAssignmentRepository } from '~/components/domains/assign/IAssignmentRepository'
 
-import { ProjectDTO } from '../dto/projectDTO'
+import { ProjectViewDTO } from '../dto/projectDTO'
 import {
 	AssignmentInputPort,
 	IAssignmentQueryService,
@@ -43,7 +43,7 @@ export const assignmentInteractor = (
 			})
 	},
 
-	async getProjectsByUsername(username: string): Promise<ProjectDTO[]> {
+	async getProjectsByUsername(username: string): Promise<ProjectViewDTO[]> {
 		return assignmentQueryService
 			.getProjectsByUsername(username)
 			.then((projects) => {

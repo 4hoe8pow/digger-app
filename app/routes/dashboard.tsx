@@ -8,7 +8,7 @@ import {
 	useUser,
 } from '@clerk/remix'
 
-import { ProjectDTO } from '~/components/applications/dto/projectDTO'
+import { ProjectViewDTO } from '~/components/applications/dto/projectDTO'
 import { createAssignmentController } from '~/components/presentations/controllers/assignmentController'
 import { PanelView } from '~/components/presentations/views/panels/PanelView'
 import TimelineView from '~/components/presentations/views/timeline/TimelineView'
@@ -51,7 +51,7 @@ export const activities = [
 
 export default function Index() {
 	const { isSignedIn, user } = useUser()
-	const [projects, setProjects] = useState<ProjectDTO[]>([])
+	const [projects, setProjects] = useState<ProjectViewDTO[]>([])
 	const [selectedProjectId, setSelectedProjectId] = useState<string>('')
 
 	useEffect(() => {
@@ -72,7 +72,7 @@ export default function Index() {
 	}
 
 	const tabs = [
-		{ title: 'Overview', path: user.username + '/overview' },
+		{ title: 'Overview', path: selectedProjectId + '/overview' },
 		{ title: 'Roadmap', path: selectedProjectId + '/roadmap' },
 		{ title: 'Burndown', path: selectedProjectId + '/burndown' },
 		{ title: 'Events', path: selectedProjectId + '/event-log' },

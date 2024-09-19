@@ -1,4 +1,4 @@
-import { ProjectDTO } from '~/components/applications/dto/projectDTO'
+import { ProjectViewDTO } from '~/components/applications/dto/projectDTO'
 import {
 	AssignmentInputPort,
 	IAssignmentQueryService,
@@ -26,7 +26,7 @@ export const AssignmentController = ({
 		assignmentInputPort.removeUserFromProject(projectId, username)
 	},
 
-	getProjectsByUsername: (username: string): Promise<ProjectDTO[]> => {
+	getProjectsByUsername: (username: string): Promise<ProjectViewDTO[]> => {
 		return assignmentInputPort.getProjectsByUsername(username)
 	},
 })

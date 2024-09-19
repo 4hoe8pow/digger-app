@@ -8,15 +8,10 @@ type ProjectType = Database['public']['Tables']['projects']['Row']
 
 // プロジェクトエンティティを生成するヘルパー関数
 const createProjectEntity = (row: ProjectType): Project => ({
+	id: row.id,
 	name: row.name,
 	description: row.description,
 	is_active: row.is_active!,
-	changeName(newName: string): Project {
-		return { ...this, name: newName }
-	},
-	changeStatus(newStatus: boolean): Project {
-		return { ...this, is_active: newStatus }
-	},
 })
 
 export const projectRepositoryImpl: IProjectRepository = {
@@ -24,15 +19,21 @@ export const projectRepositoryImpl: IProjectRepository = {
 	findById: async (id: string): Promise<Project | null> => {
 		const { data, error } = await db
 			.from('projects')
-			.select('*')
+			.select(
+				`
+				id,
+				name,
+				description,
+				is_active
+				`
+			)
 			.eq('id', id)
 			.single()
 
 		if (error || !data) {
 			return null
 		}
-
-		return createProjectEntity(data)
+		return createProjectEntity(data as ProjectType)
 	},
 
 	// プロジェクトを保存

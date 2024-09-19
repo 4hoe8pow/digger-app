@@ -1,4 +1,4 @@
-import { ProjectDTO } from '../dto/projectDTO'
+import { ProjectViewDTO } from '../dto/projectDTO'
 
 export type AssignmentInputPort = {
 	//ユーザをプロジェクトへアサイン
@@ -8,9 +8,9 @@ export type AssignmentInputPort = {
 		projectId: string,
 		username: string
 	) => Promise<void>
-	getProjectsByUsername: (username: string) => Promise<ProjectDTO[]>
+	getProjectsByUsername: (username: string) => Promise<ProjectViewDTO[]>
 }
 
 export type IAssignmentQueryService = {
-	getProjectsByUsername: (username: string) => Promise<ProjectDTO[]>
+	getProjectsByUsername: (username: string) => Promise<ProjectViewDTO[]>
 }

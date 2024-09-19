@@ -1,3 +1,5 @@
+import { ProjectViewDTO } from '../dto/projectDTO'
+
 export type ProjectInputPort = {
 	createProject: (
 		name: string,
@@ -11,5 +13,5 @@ export type ProjectInputPort = {
 		is_active?: boolean
 	) => Promise<void>
 	deleteProject: (id: string) => Promise<void>
-	getProjectById: (id: string) => Promise<void>
+	getProjectById: (id: string) => Promise<ProjectViewDTO>
 }

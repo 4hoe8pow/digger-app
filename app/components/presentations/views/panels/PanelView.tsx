@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Outlet, useNavigate } from '@remix-run/react'
 
@@ -13,13 +13,19 @@ type PanelViewProps = {
 }
 
 export function PanelView({ tabs, isProjectSelected }: PanelViewProps) {
-	const [selectedTab, setSelectedTab] = useState(tabs[0].path) // 初期選択は最初のタブのパス
+	const [selectedTab, setSelectedTab] = useState(tabs[0]?.path || '')
 	const navigate = useNavigate()
 
 	const handleTabClick = (path: string) => {
 		setSelectedTab(path)
 		navigate(path)
 	}
+
+	useEffect(() => {
+		if (tabs.length > 0) {
+			setSelectedTab(tabs[0].path)
+		}
+	}, [tabs])
 
 	return (
 		<div className={css({ w: '100%' })}>

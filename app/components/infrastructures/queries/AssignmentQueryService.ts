@@ -1,9 +1,9 @@
-import { ProjectDTO } from '~/components/applications/dto/projectDTO'
+import { ProjectViewDTO } from '~/components/applications/dto/projectDTO'
 import { IAssignmentQueryService } from '~/components/applications/input/AssignmentInputPort'
 import { db } from '~/components/infrastructures/db'
 
 export const assignmentQueryService: IAssignmentQueryService = {
-	async getProjectsByUsername(username: string): Promise<ProjectDTO[]> {
+	async getProjectsByUsername(username: string): Promise<ProjectViewDTO[]> {
 		return Promise.resolve(
 			db
 				.from('assignments')
@@ -33,7 +33,7 @@ export const assignmentQueryService: IAssignmentQueryService = {
 
 			console.log('DATA', data)
 
-			const projectDTOs: ProjectDTO[] = data.map(
+			const projectDTOs: ProjectViewDTO[] = data.map(
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(assignment: any) => ({
 					id: assignment.projects.id,
