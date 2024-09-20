@@ -10,8 +10,8 @@ interface RoadmapChartProps {
 
 // Helper function to get the date range from tickets
 const getDateRange = (tickets: TicketViewDTO[]) => {
-	const dates = tickets.flatMap(({ start, end }) =>
-		[start, end].map((d) => parse(d).getTime())
+	const dates = tickets.flatMap(({ startedAt, completedAt }) =>
+		[startedAt, completedAt].map((d) => parse(d).getTime())
 	)
 	return {
 		startDate: new Date(Math.min(...dates)),
@@ -78,20 +78,20 @@ const RoadmapChart = ({ tickets }: RoadmapChartProps) => {
 					</tr>
 				</thead>
 				<tbody>
-					{tickets.map(({ id, name, start, end }) => {
+					{tickets.map(({ id, title, startedAt, completedAt }) => {
 						return (
 							<tr key={id}>
 								<td
 									className={`${styles.cell} ${styles.fixedColumn}`}
 								>
-									{name}
+									{title}
 								</td>
 								{dateRange.map(({ date }, columnIndex) => (
 									<td
 										key={columnIndex}
 										className={`${styles.cell} ${
-											date >= parse(start) &&
-											date <= parse(end)
+											date >= parse(startedAt) &&
+											date <= parse(completedAt)
 												? styles.highlightedCell
 												: ''
 										}`}

@@ -7,6 +7,7 @@ import {
 } from '@remix-run/react'
 import { validationError } from '@rvf/remix'
 
+import { fromTicketSchemaToTicketSaveDTO } from '~/components/applications/dto/ticketDTO'
 import { createTicketController } from '~/components/presentations/controllers/ticketController'
 import { Modal } from '~/components/presentations/views/Modal'
 import { TicketForm } from '~/components/presentations/views/TicketForm'
@@ -15,14 +16,19 @@ import { validator } from '~/components/presentations/views/validation/ticketSch
 
 import { grid, gridItem } from 'styled-system/patterns'
 
-export async function clientAction({ request }: ClientActionFunctionArgs) {
+export async function clientAction({
+	params,
+	request,
+}: ClientActionFunctionArgs) {
 	const result = await validator.validate(await request.formData())
-
+	const { username, projectId } = params
 	if (result.error) {
 		return validationError(result.error, result.submittedData)
 	}
-	// eslint-disable-next-line no-console
-	console.log('in-action:', result.data)
+	const ticketController = createTicketController()
+	await ticketController.openTicket(
+		fromTicketSchemaToTicketSaveDTO(result.data, username!, projectId!)
+	)
 	return result.data
 }
 

@@ -30,8 +30,8 @@ ChartJS.register(
 type TicketViewDTO = {
 	id: string
 	username: string
-	start: string
-	end: string
+	startedAt: string
+	completedAt: string
 	status: string
 }
 
@@ -58,9 +58,9 @@ interface BurndownChartProps {
 // Helper Functions
 const getDateRange = (tickets: TicketViewDTO[]) =>
 	tickets.reduce(
-		({ min, max }, { start, end }) => ({
-			min: Math.min(min, parse(start).getTime()),
-			max: Math.max(max, parse(end).getTime()),
+		({ min, max }, { startedAt, completedAt }) => ({
+			min: Math.min(min, parse(startedAt).getTime()),
+			max: Math.max(max, parse(completedAt).getTime()),
 		}),
 		{ min: Infinity, max: -Infinity }
 	)
@@ -76,14 +76,15 @@ const calculateMetrics = (tickets: TicketViewDTO[], dateRange: Date[]) => {
 		(date) =>
 			tickets.filter(
 				(ticket) =>
-					parse(ticket.start) <= date && parse(ticket.end) >= date
+					parse(ticket.startedAt) <= date &&
+					parse(ticket.completedAt) >= date
 			).length
 	)
 	const averageDailyTickets =
 		dailyTicketCounts.length > 0 ? mean(dailyTicketCounts) : 0
 
 	const openDays = tickets.map((ticket) =>
-		diffDays(parse(ticket.end), parse(ticket.start))
+		diffDays(parse(ticket.completedAt), parse(ticket.startedAt))
 	)
 	const averageResponseTime =
 		tickets.length > 0
@@ -96,7 +97,7 @@ const calculateMetrics = (tickets: TicketViewDTO[], dateRange: Date[]) => {
 	)
 
 	const delayedTickets = openTickets.filter(
-		(ticket) => parse(ticket.end) < today
+		(ticket) => parse(ticket.completedAt) < today
 	)
 
 	const turnoverRate = openDays.length > 0 ? mean(openDays) : 0
@@ -207,8 +208,8 @@ const BurndownChart = ({ tickets }: BurndownChartProps) => {
 					(date) =>
 						userTickets.filter(
 							(ticket) =>
-								parse(ticket.start) <= date &&
-								parse(ticket.end) >= date
+								parse(ticket.startedAt) <= date &&
+								parse(ticket.completedAt) >= date
 						).length
 				),
 				borderColor: `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${

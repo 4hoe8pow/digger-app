@@ -5,46 +5,30 @@ import {
 	Ticket,
 	TicketStatus,
 	TicketPriority,
+	fromNumberToTicketDifficulty,
+	fromTicketDifficultyToNumber,
+	fromTicketPriorityToString,
+	fromTicketStatusToString,
 } from '~/components/domains/ticket/Ticket'
 
 import { db } from '../db'
-import { Database } from '../schema'
-
-type TicketType = Database['public']['Tables']['tickets']['Row']
 
 // チケットエンティティを生成するヘルパー関数
-const createTicketEntity = (row: TicketType): Ticket => ({
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createTicketEntity = (row: any): Ticket => ({
 	id: row.id,
 	createdAt: parse(row.created_at!),
 	updatedAt: parse(row.updated_at!),
 	title: row.title,
 	description: row.description,
-	username: row.users.clerk_username,
-	effortEstimate: row.effort_estimate!,
+	username: row.users?.clerk_username || '',
+	difficulty: fromNumberToTicketDifficulty(row.effort_estimate),
 	startedAt: parse(row.started_at!),
 	completedAt: parse(row.completed_at!),
 	status: row.status as TicketStatus,
 	priority: row.priority as TicketPriority,
-
-	changeTitle(newTitle: string): Ticket {
-		return { ...this, title: newTitle, updatedAt: new Date() }
-	},
-	changeStatus(newStatus: TicketStatus): Ticket {
-		return { ...this, status: newStatus, updatedAt: new Date() }
-	},
-	changePriority(newPriority: TicketPriority): Ticket {
-		return { ...this, priority: newPriority, updatedAt: new Date() }
-	},
-	changeUserId(newUserId: string): Ticket {
-		return { ...this, username: newUserId, updatedAt: new Date() }
-	},
-	changeEffortEstimate(newEffortEstimate: number): Ticket {
-		return {
-			...this,
-			effortEstimate: newEffortEstimate,
-			updatedAt: new Date(),
-		}
-	},
+	projectId: row.project_id,
 })
 
 export const ticketRepositoryImpl: ITicketRepository = {
@@ -63,21 +47,45 @@ export const ticketRepositoryImpl: ITicketRepository = {
 		return createTicketEntity(data)
 	},
 	// チケットを保存
-	save: async (ticket: Ticket): Promise<void> => {
-		await db
-			.from('tickets')
-			.upsert({
-				id: ticket.id,
-				created_at: ticket.createdAt.toISOString(),
-				updated_at: ticket.updatedAt.toISOString(),
-				title: ticket.title,
-				description: ticket.description,
-				username: ticket.username,
-				effort_estimate: ticket.effortEstimate,
-				status: ticket.status,
-				priority: ticket.priority,
-			})
+	save: async (ticket: Ticket): Promise<void | null> => {
+		const { data: userData, error } = await db
+			.from('users')
+			.select('id')
+			.eq('clerk_username', ticket.username)
 			.single()
+
+		if (error || !userData) {
+			return null
+		}
+
+		console.log('target', ticket)
+
+		const { data: upsertData, error: upsertError } = await db
+			.from('tickets')
+			.upsert(
+				{
+					id: ticket.id === '' ? undefined : ticket.id,
+					title: ticket.title,
+					description: ticket.description,
+					user_id: userData.id,
+					effort_estimate: fromTicketDifficultyToNumber(
+						ticket.difficulty
+					),
+					status: fromTicketStatusToString(ticket.status),
+					priority: fromTicketPriorityToString(ticket.priority),
+					project_id: ticket.projectId,
+					started_at: ticket.startedAt
+						? ticket.startedAt.toISOString()
+						: null,
+					completed_at: ticket.completedAt
+						? ticket.completedAt.toISOString()
+						: null,
+				},
+				{ onConflict: 'id' }
+			)
+			.select()
+		console.log('upsertData', upsertData)
+		console.log('upsertError', upsertError)
 	},
 
 	// チケットをIDで削除
@@ -108,8 +116,6 @@ export const ticketRepositoryImpl: ITicketRepository = {
 			)
 			.eq('project_id', projectId)
 			.in('status', [TicketStatus.PENDING, TicketStatus.ACTIVE])
-
-		console.info('DATA1', data)
 		if (error || !data) {
 			return []
 		}
@@ -139,9 +145,6 @@ export const ticketRepositoryImpl: ITicketRepository = {
 				`
 			)
 			.eq('project_id', projectId)
-
-		console.info('DATA2', data)
-
 		if (error || !data) {
 			return []
 		}

@@ -1,5 +1,6 @@
 import {
 	EventsLogDTO,
+	TicketSaveDTO,
 	TicketViewDTO,
 } from '~/components/applications/dto/ticketDTO'
 import {
@@ -34,6 +35,11 @@ export const TicketController = ({
 	//チケットに関するイベントログ取得
 	getEventsLog: (projectId: string): Promise<EventsLogDTO[]> => {
 		return ticketInputPort.getEventsLog(projectId)
+	},
+
+	//チケットの作成
+	openTicket: (data: TicketSaveDTO): Promise<void> => {
+		return ticketInputPort.saveTicket(data)
 	},
 })
 

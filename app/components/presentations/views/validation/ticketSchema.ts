@@ -1,30 +1,45 @@
 import { withValibot } from '@rvf/valibot'
 import {
-	literal,
+	enum_,
 	maxLength,
 	minLength,
 	object,
 	string,
 	pipe,
-	description,
 	InferOutput,
 	date,
 	optional,
 } from 'valibot'
 
-const titleSchema = pipe(string(), minLength(2))
-const descriptionSchema = pipe(string(), minLength(10), maxLength(300))
-const estimateEffortSchema = pipe(
-	literal('2' || '3'),
-	description('フィボナッチ見積')
+import {
+	TicketDifficulty,
+	TicketPriority,
+	TicketStatus,
+} from '~/components/domains/ticket/Ticket'
+
+const titleSchema = pipe(
+	string(),
+	minLength(2, 'Title must be at least 2 characters long.')
 )
-const dueDateSchema = optional(date())
+
+const descriptionSchema = pipe(
+	string(),
+	minLength(10, 'Description must be at least 10 characters long.'),
+	maxLength(300, 'Description cannot exceed 300 characters.')
+)
+
+const effortEstimateSchema = enum_(TicketDifficulty)
+const prioritySchema = enum_(TicketPriority)
+const statusSchema = enum_(TicketStatus)
+const completedAtSchema = optional(date())
 
 export const ticketSchema = object({
 	title: titleSchema,
 	description: descriptionSchema,
-	estimateEffort: estimateEffortSchema,
-	dueDate: dueDateSchema,
+	difficulty: effortEstimateSchema,
+	priority: prioritySchema,
+	status: statusSchema,
+	completedAt: completedAtSchema,
 })
 
 export type TicketSchemaType = InferOutput<typeof ticketSchema>
@@ -34,6 +49,35 @@ export const validator = withValibot(ticketSchema)
 export const ticketDefaultValue: TicketSchemaType = {
 	description: '',
 	title: '',
-	estimateEffort: '2',
-	dueDate: undefined,
+	difficulty: TicketDifficulty.Simple,
+	priority: TicketPriority.Medium,
+	status: TicketStatus.PENDING,
+	completedAt: undefined,
+}
+
+type Option = {
+	value: TicketDifficulty | TicketPriority | TicketStatus
+	label: string
+}
+
+export const getEffortOptions = (): Option[] => {
+	return Object.values(TicketDifficulty).map((value) => {
+		const [numericValue, ...labelParts] = value.split(' - ')
+		const label = `${numericValue} - ${labelParts.join(' - ')}`
+		return { value, label }
+	})
+}
+
+export const getPriorityOptions = (): Option[] => {
+	return Object.values(TicketPriority).map((value) => ({
+		value,
+		label: value,
+	}))
+}
+
+export const getStatusOptions = (): Option[] => {
+	return Object.values(TicketStatus).map((value) => ({
+		value,
+		label: value,
+	}))
 }

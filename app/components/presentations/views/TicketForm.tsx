@@ -1,9 +1,15 @@
 import { useActionData } from '@remix-run/react'
 import { isValidationErrorResponse, useForm } from '@rvf/remix'
 
-import { clientAction } from '~/routes/dashboard.$projectId.roadmap'
+import { clientAction } from '~/routes/dashboard.$projectId.$username.roadmap'
 
-import { ticketDefaultValue, validator } from './validation/ticketSchema'
+import {
+	getEffortOptions,
+	getPriorityOptions,
+	getStatusOptions,
+	ticketDefaultValue,
+	validator,
+} from './validation/ticketSchema'
 
 import { css } from 'styled-system/css'
 import { flex, grid, gridItem } from 'styled-system/patterns'
@@ -26,6 +32,57 @@ type TextAreaFieldProps = {
 	>
 }
 
+type SelectFieldProps = {
+	label: string
+	error?: string | null
+	options: { value: string; label: string }[]
+	inputProps: React.DetailedHTMLProps<
+		React.SelectHTMLAttributes<HTMLSelectElement>,
+		HTMLSelectElement
+	>
+}
+
+export function SelectField({
+	label,
+	error,
+	options,
+	inputProps,
+}: SelectFieldProps) {
+	return (
+		<div className={grid({ columns: 12, columnGap: '1', rowGap: '0.5' })}>
+			{/* Label */}
+			<div className={gridItem({ colSpan: 4 })}>
+				<label
+					htmlFor={inputProps.id}
+					className={css({ fontWeight: 'bold' })}
+				>
+					{label}
+				</label>
+			</div>
+			{/* Select */}
+			<div className={gridItem({ colSpan: 8 })}>
+				<select {...inputProps} className={css({ w: '100%' })}>
+					{options.map((option) => (
+						<option key={option.value} value={option.value}>
+							{option.label}
+						</option>
+					))}
+				</select>
+			</div>
+			{/* Error */}
+			<div
+				className={gridItem({
+					colSpan: 12,
+					textAlign: 'right',
+					color: 'red.500',
+				})}
+			>
+				{error && <span>{error}</span>}
+			</div>
+		</div>
+	)
+}
+
 export function InputField({ label, error, inputProps }: InputFieldProps) {
 	return (
 		<div className={grid({ columns: 12, columnGap: '1' })}>
@@ -43,7 +100,13 @@ export function InputField({ label, error, inputProps }: InputFieldProps) {
 				<input {...inputProps} className={css({ w: '100%' })} />
 			</div>
 			{/* Error */}
-			<div className={gridItem({ colSpan: 12, textAlign: 'right' })}>
+			<div
+				className={gridItem({
+					colSpan: 12,
+					textAlign: 'right',
+					color: 'red.500',
+				})}
+			>
 				{error && <span>{error}</span>}
 			</div>
 		</div>
@@ -74,7 +137,13 @@ export function TextAreaField({
 				/>
 			</div>
 			{/* Error */}
-			<div className={gridItem({ colSpan: 12, textAlign: 'right' })}>
+			<div
+				className={gridItem({
+					colSpan: 12,
+					textAlign: 'right',
+					color: 'red.500',
+				})}
+			>
 				{error && <span>{error}</span>}
 			</div>
 		</div>
@@ -100,7 +169,7 @@ export function TicketForm({ onClose }: Props) {
 	return (
 		<div className="window">
 			<div className="title-bar">
-				<div className="title-bar-text">Create New Ticket</div>
+				<div className="title-bar-text">Open New Ticket</div>
 				<div className="title-bar-controls">
 					<button aria-label="Close" onClick={onClose}></button>
 				</div>
@@ -128,32 +197,40 @@ export function TicketForm({ onClose }: Props) {
 						}}
 						error={form.error('description') ?? undefined}
 					/>
-					<InputField
+					<SelectField
 						label="Estimate Effort"
 						inputProps={{
-							...form.getInputProps('estimateEffort'),
-							id: 'estimateEffort',
-							type: 'text',
+							...form.getInputProps('difficulty'),
+							id: 'difficulty',
 						}}
-						error={form.error('estimateEffort') ?? undefined}
+						options={getEffortOptions()}
+						error={form.error('difficulty') ?? undefined}
 					/>
-					<InputField
-						label="Due Date"
+					<SelectField
+						label="Priority"
 						inputProps={{
-							...form.getInputProps('dueDate'),
-							id: 'dueDate',
-							type: 'text',
+							...form.getInputProps('priority'),
+							id: 'priority',
 						}}
-						error={form.error('estimateEffort') ?? undefined}
+						options={getPriorityOptions()}
+						error={form.error('priority') ?? undefined}
 					/>
-
+					<SelectField
+						label="Status"
+						inputProps={{
+							...form.getInputProps('status'),
+							id: 'status',
+						}}
+						options={getStatusOptions()}
+						error={form.error('status') ?? undefined}
+					/>
 					<div className={css({ textAlign: 'right' })}>
 						<button
 							type="submit"
 							disabled={form.formState.isSubmitting}
 							className={css({ w: '38%' })}
 						>
-							CREATE
+							OPEN
 						</button>
 					</div>
 				</form>
