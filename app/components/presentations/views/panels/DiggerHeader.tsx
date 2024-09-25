@@ -19,6 +19,7 @@ const styles = {
 		textAlign: { base: 'center', sm: 'left' },
 		backdropFilter: 'auto',
 		backdropBlur: 'sm',
+		zIndex: '999',
 	}),
 	logo: css({
 		fontSize: '1.6rem',
@@ -27,15 +28,17 @@ const styles = {
 	}),
 	menu: grid({
 		columns: 12,
-		hideBelow: 'sm',
 		textAlign: 'center',
 		divideX: '1px',
 		divideStyle: 'solid',
 		divideColor: 'slate.300',
 		alignItems: 'center',
 	}),
+	menuText: css({
+		hideBelow: 'sm',
+	}),
 	icon: gridItem({
-		colSpan: { base: 2, sm: 3 },
+		colSpan: 3,
 		cursor: 'pointer',
 	}),
 }
@@ -50,21 +53,21 @@ export const DiggerHeader = () => {
 					className={styles.icon}
 					aria-label="📈Dashboard"
 				>
-					📈Dashboard
+					📈<span className={styles.menuText}>Dashboard</span>
 				</Link>
 				<Link
 					to={'/notifications'}
 					className={styles.icon}
 					aria-label="Notifications"
 				>
-					🔔Notifications
+					🔔<span className={styles.menuText}>Notifications</span>
 				</Link>
 				<Link
 					to={'/user-settings'}
 					className={styles.icon}
 					aria-label="Profile"
 				>
-					👤User Settings
+					⚙<span className={styles.menuText}>Settings</span>
 				</Link>
 				<SignedIn>
 					<div className={styles.icon}>

@@ -18,7 +18,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
 				position: 'fixed',
 				inset: 0,
 				alignItems: 'center',
-				zIndex: 50,
+				zIndex: 1000,
 			})}
 		>
 			{/* Overlay to darken background */}
